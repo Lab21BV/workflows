@@ -53,14 +53,25 @@ Tasks, Solutions, Notes, Attachments, Activities, Projects.
 
 ## Automatiseringen
 
-- **Assignment rules**: geen actieve regels gevonden via API.
-- **Workflow rules**: niet via REST API exposed door Zoho — moeten handmatig
-  geïnventariseerd worden of via Setup → Automation → Workflow Rules.
-- **Blueprints / Approval processes / Custom functions**: nog te inventariseren.
+Zoho's REST API geeft **workflow rules, blueprints en custom functions niet
+rechtstreeks terug**. Wel achterhaalbaar via metadata:
+
+- **Blueprints** — alle modules met `isBlueprintSupported: true` hebben een
+  staten-machine waarvan de states als picklist op het `Status` (of vergelijkbaar)
+  veld staan. We reconstrueren de transitions handmatig — zie bv.
+  [`docs/voorinspectie-blueprint.md`](voorinspectie-blueprint.md).
+- **Assignment rules**: geen actieve regels (`getAssignmentRules` → leeg).
+- **Variables**: geen org-wide variabelen geconfigureerd.
+- **Custom functions / workflow rules / approval processes**: niet via API.
+  Te exporteren via Zoho Setup → DataExport → Configuration data, of
+  handmatig overschrijven naar `src/workflows/` per regel.
 
 ## Vervolgstappen
 
-1. Per module velden ophalen met `pnpm zoho:probe <Module>` en types vastleggen.
-2. Per Zoho workflow-regel die we willen vervangen: een entry in
-   `src/workflows/` + registratie in `registry.ts`.
-3. Trigger-bron kiezen: Zoho webhook → Vercel function, of pollende cron.
+1. `npx tsx src/scripts/sync-metadata.ts` om `data/zoho/<module>.json` te
+   genereren (vereist `.env` met OAuth-credentials).
+2. Per blueprint een file in `src/zoho/blueprints/` met states + transitions.
+3. Per workflow-regel een file in `src/workflows/` + registratie in
+   `registry.ts`. Trigger-bron: Zoho webhook → Vercel function, of cron.
+4. Voor Deluge custom functions: kopieer de logica handmatig uit Function
+   Studio en herschrijf naar TypeScript.

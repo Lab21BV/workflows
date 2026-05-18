@@ -1,0 +1,601 @@
+{
+  "api_name": "Planningen",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Naam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Planning-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Verzendadres_plaats_1",
+      "label": "Verzendadres (plaats)",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Klantnaam_1",
+      "label": "Relatie",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verkooporder",
+      "label": "Verkooporder",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Sales_Orders"
+    },
+    {
+      "api_name": "Plannings_nummer",
+      "label": "Uitvoerings Nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "UN${dd}${MM}${yy}"
+    },
+    {
+      "api_name": "Contactpersoon",
+      "label": "Contactpersoon",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Aannemer",
+      "label": "Aannemer",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Vendors"
+    },
+    {
+      "api_name": "Dienst",
+      "label": "Dienst",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Optie 2",
+        "Droogbouw",
+        "Ondergrond saneren",
+        "Traprenovatie",
+        "Vloer leggen",
+        "Vloerverwarming",
+        "1e egalisatie",
+        "2e egalisatie",
+        "Opstookprotocol",
+        "Opstookprotocol nwe vloerverwarming",
+        "Annulering legopdracht",
+        "Annulering",
+        "Preparatie",
+        "Controle lijst legdienst",
+        "Legdienst",
+        "Sales controle",
+        "2e Voorinspectie",
+        "Leggen vloer",
+        "Opstookprotocol aanbouw",
+        "Aanbouw",
+        "Aanbouw vloerverwarming in bedrijf",
+        "Storting basisvloer nieuwbouw",
+        "Activatie vloerverwarming",
+        "Verhuizen",
+        "Muren verwijderen",
+        "Sleuteloverdracht",
+        "Opleveren nieuwbouw",
+        "Aanbouw dekvloer storten",
+        "Basisvloer beoordeelbaar",
+        "Voorinspectie"
+      ]
+    },
+    {
+      "api_name": "Einddatum",
+      "label": "Einddatum",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Datum",
+      "label": "Datum",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Uitvoerder",
+      "label": "Uitvoerder",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Aannemer van Lab21",
+        "Lab21",
+        "Klant",
+        "Leverancier",
+        "3e partij"
+      ]
+    },
+    {
+      "api_name": "Fase",
+      "label": "Fase",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Nog niet gedaan",
+        "In uitvoering",
+        "Gereed"
+      ]
+    },
+    {
+      "api_name": "E_mail_Aannemer",
+      "label": "E-mail aannemer",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoon_Aannemer",
+      "label": "Telefoon aannemer",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verzendadres_postcode",
+      "label": "Verzendadres (postcode)",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verzendadres_adres",
+      "label": "Verzendadres (adres)",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Opmerkingen",
+      "label": "Opmerkingen",
+      "type": "textarea",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Type_product",
+      "label": "Type vloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Lijm PVC",
+        "Lijm PVC visgraat",
+        "Lijm PVC hongaarse punt / weense punt",
+        "Lijm PVC tegels",
+        "Klik PVC",
+        "Klik PVC visgraat",
+        "Klik PVC tegels",
+        "Laminaat",
+        "Laminaat visgraat",
+        "Laminaat tegels",
+        "Hout verlijmd",
+        "Hout zwevend"
+      ]
+    },
+    {
+      "api_name": "Type_product2",
+      "label": "Type product",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Vloeren",
+        "Gordijnen",
+        "Binnenzonwering",
+        "Shutter",
+        "Traprenovatie",
+        "Lattenwand",
+        "Accessoires",
+        "Dienst",
+        "Hardware",
+        "CRM Applications",
+        "Software",
+        "Raamdecoratie",
+        "Ondergrond",
+        "Vloerverwarming"
+      ]
+    },
+    {
+      "api_name": "Type_trap",
+      "label": "Type trap",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Reno",
+        "Lijm PVC"
+      ]
+    },
+    {
+      "api_name": "Reden_annulering_legopdracht",
+      "label": "Reden annulering legopdracht",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Uitvoering_door",
+      "label": "Uitvoering door",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Reden_annulering_order",
+      "label": "Reden annulering order",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verantwoordelijk_voor",
+      "label": "Verantwoordelijk voor",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Controle_door",
+      "label": "Controle door",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefonisch_contact_door",
+      "label": "Telefonisch contact door",
+      "type": "multiuserlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Goedgekeurd_door",
+      "label": "Goedgekeurd door",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Afbellen_legger",
+      "label": "Afbellen legger",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Annulering_legopdracht",
+      "label": "Annulering legopdracht goedgekeurd",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Annuleren_order",
+      "label": "Annuleren order",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Follow_up_stap_voorinspectieformulier",
+      "label": "Follow up stap voorinspectieformulier",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Follow_up_stap_datum_voorinspectie",
+      "label": "Follow-up stap datum voorinspectie",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Informatie_naar_legger",
+      "label": "Informatie naar legger",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Follow_up_stap_legdienst",
+      "label": "Follow up stap legdienst",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Vloerverwarming_inclusief",
+      "label": "Vloerverwarming inclusief",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Legopdracht_aanbieden",
+      "label": "Legopdracht aanbieden",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Droogbouw_inclusief",
+      "label": "Droogbouw inclusief",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Alarm_glooiing_ondergrond",
+      "label": "Alarm glooiing ondergrond",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Ondergrond_saneren_inclusief",
+      "label": "Ondergrond saneren inclusief",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Verwijderen_vloer_inclusief",
+      "label": "Verwijderen vloer inclusief",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Te_behandelen_door_legdienst",
+      "label": "Te behandelen door legdienst",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Legopdracht_inclusief",
+      "label": "Legopdracht inclusief",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Verzoek_actie_verkoper",
+      "label": "Verzoek actie verkoper",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Showroom",
+      "label": "Showroom",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Locaties"
+    },
+    {
+      "api_name": "Technische_support",
+      "label": "Technische support",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Ruimte",
+      "label": "Ruimte",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Ruimtes"
+    },
+    {
+      "api_name": "Gewenste_leverdatum",
+      "label": "Gewenste leverdatum",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Related_Services",
+      "label": "Related Services",
+      "type": "subform",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "ID_Creator",
+      "label": "ID Creator",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Contactpersoon_Aannemer",
+      "label": "Contactpersoon Aannemer",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    }
+  ]
+}

@@ -1,63 +1,89 @@
 import { z } from "zod";
+import {
+  canTransition,
+  type VoorinspectieState,
+  VOORINSPECTIE_STATES,
+} from "../zoho/blueprints/voorinspectie.js";
 import type { Workflow, WorkflowContext, WorkflowResult } from "./types.js";
 
 /**
- * Reference workflow — placeholder for the real Zoho rule.
+ * Workflow: when a Voorinspectie transitions to "Akkoord" (i.e. customer
+ * + legger both signed off), spin up the matching Planning record so the
+ * uitvoering chain (Verwijderen → Voorbereiden → ... → Afwerken) can start.
  *
- * Trigger: a "Voorinspecties" record is edited and its status flips to "Afgerond".
- * Action:  ensure a "Planningen" (Uitvoeringen) record exists that references it,
- *          carrying over the locatie + planned date.
+ * Trigger source: Zoho webhook on `Voorinspecties` edit, configured to
+ * post the record ID + Status (Fase) + Aannemer + Gewenste_leverdatum.
  *
- * Field API names below are guesses based on the Dutch module labels — adjust
- * after running the `zoho:probe` script against the real layout.
+ * Field references are validated against `data/zoho/Voorinspecties.json`
+ * (regenerate with `npx tsx src/scripts/sync-metadata.ts Voorinspecties`).
  */
+
+const stateSchema = z.enum(VOORINSPECTIE_STATES);
 
 const payloadSchema = z.object({
   voorinspectieId: z.string().min(1),
-  status: z.string().optional(),
-  locatieId: z.string().optional(),
-  plannedDate: z.string().optional(),
+  status: stateSchema,
+  previousStatus: stateSchema.optional(),
 });
 
 type Payload = z.infer<typeof payloadSchema>;
 
+const TRIGGER_STATE: VoorinspectieState = "Akkoord";
+
+type VoorinspectieRecord = {
+  [k: string]: unknown;
+  id: string;
+  Name: string;
+  Status: VoorinspectieState;
+  Aannemer?: { id: string; name: string };
+  Verkooporders?: { id: string; name: string };
+  Contactpersoon?: { id: string; name: string };
+  Gewenste_leverdatum?: string;
+  Accountmanager?: { id: string; name: string };
+};
+
 export const voorinspectieAfgerond: Workflow<Payload> = {
-  id: "voorinspectie-afgerond",
-  description:
-    "When a Voorinspectie is marked Afgerond, create or update a linked Planning (Uitvoering).",
+  id: "voorinspectie-akkoord",
+  description: "When Voorinspectie status → Akkoord, create the Planning record for execution.",
 
   trigger: {
-    name: "zoho.voorinspectie.edit",
+    name: "zoho.voorinspecties.edit",
     description: "Zoho webhook on Voorinspecties edit",
     parse: (input) => payloadSchema.parse(input),
   },
 
   async run(payload: Payload, ctx: WorkflowContext): Promise<WorkflowResult> {
-    if (payload.status && payload.status.toLowerCase() !== "afgerond") {
+    if (payload.status !== TRIGGER_STATE) {
       return { status: "skipped", message: `status=${payload.status}` };
     }
-
-    const voorinspectie = await ctx.records.get("Voorinspecties", payload.voorinspectieId);
-    if (!voorinspectie) {
-      return { status: "error", message: "Voorinspectie not found" };
+    if (payload.previousStatus && !canTransition(payload.previousStatus, payload.status)) {
+      ctx.logger.warn("Unexpected transition", payload);
     }
 
+    const vi = await ctx.records.get<VoorinspectieRecord>(
+      "Voorinspecties",
+      payload.voorinspectieId,
+    );
+    if (!vi) return { status: "error", message: "Voorinspectie not found" };
+
     const existing = await ctx.records.search("Planningen", {
-      criteria: `(Voorinspectie:equals:${payload.voorinspectieId})`,
+      criteria: `(Verkooporder:equals:${vi.Verkooporders?.id ?? ""})and(Dienst:equals:Vloer leggen)`,
       perPage: 1,
     });
     if (existing.data.length > 0) {
-      ctx.logger.info("Planning already exists", { id: existing.data[0]?.id });
-      return { status: "skipped", message: "Planning already linked" };
+      return { status: "skipped", message: "Planning already exists" };
     }
 
     const created = await ctx.records.create("Planningen", [
       {
-        Name: `Uitvoering ${payload.voorinspectieId}`,
-        Voorinspectie: payload.voorinspectieId,
-        Locatie: payload.locatieId,
-        Geplande_datum: payload.plannedDate,
-        Bron: "Workflow:voorinspectie-afgerond",
+        Name: `Uitvoering ${vi.Name}`,
+        Verkooporder: vi.Verkooporders?.id,
+        Aannemer: vi.Aannemer?.id,
+        Contactpersoon: vi.Contactpersoon?.id,
+        Dienst: "Vloer leggen",
+        Uitvoerder: "Aannemer van Lab21",
+        Fase: "Nog niet gedaan",
+        Gewenste_leverdatum: vi.Gewenste_leverdatum,
       },
     ]);
 

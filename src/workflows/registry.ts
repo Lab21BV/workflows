@@ -1,9 +1,9 @@
 import type { Workflow } from "./types.js";
 import { voorinspectieAfgerond } from "./voorinspectie-afgerond.js";
 
-export const WORKFLOWS = {
-  [voorinspectieAfgerond.id]: voorinspectieAfgerond,
-} as const satisfies Record<string, Workflow<unknown>>;
+export const WORKFLOWS: Record<string, Workflow<unknown>> = {
+  [voorinspectieAfgerond.id]: voorinspectieAfgerond as Workflow<unknown>,
+};
 
 export type WorkflowId = keyof typeof WORKFLOWS;
 
