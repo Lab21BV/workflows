@@ -1,0 +1,263 @@
+{
+  "api_name": "Locaties",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Locatienaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Locatie-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Email",
+      "label": "E-mail",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Adres",
+      "label": "Straat",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Postcode",
+      "label": "Postcode",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Plaats",
+      "label": "Plaats",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Rayon",
+      "label": "Rayon",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Trustpilot",
+      "label": "Trustpilot",
+      "type": "website",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoonnummer",
+      "label": "Telefoonnummer",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Google_review",
+      "label": "Google review",
+      "type": "website",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Code_sleutelkast",
+      "label": "Code sleutelkast",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Wifi_wachtwoord",
+      "label": "Wifi wachtwoord",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Vertegenwoordigers",
+      "label": "Vertegenwoordigers",
+      "type": "multiuserlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verhuurder",
+      "label": "Verhuurder",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Vendors"
+    },
+    {
+      "api_name": "E_mail_verhuurder",
+      "label": "E-mail verhuurder",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Plaats_verhuurder",
+      "label": "Plaats verhuurder",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Adres_verhuurder",
+      "label": "Adres verhuurder",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoon",
+      "label": "Telefoon",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Crediteurnummer_King_7",
+      "label": "Crediteurnr. King",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Displays",
+      "label": "Displays",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Oppervlakte_M2",
+      "label": "Oppervlakte (M2)",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Openingstijden_2",
+      "label": "Openingstijden 2",
+      "type": "subform",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Bereikbaarheid",
+      "label": "Bereikbaarheid",
+      "type": "textarea",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Locatie_nummer",
+      "label": "Locatie nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "LOC-${MM}${yyyy}-"
+    }
+  ]
+}

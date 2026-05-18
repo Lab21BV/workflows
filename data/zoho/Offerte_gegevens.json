@@ -1,0 +1,14 @@
+{
+  "api_name": "Offerte_gegevens",
+  "kind": "kiosk_process_flow",
+  "attached_to": "Quotes",
+  "fields": [
+    { "api_name": "id", "label": "Record-ID", "type": "bigint", "read_only": true, "required": false },
+    { "api_name": "Owner", "label": "Eigenaar", "type": "ownerlookup", "read_only": true, "required": false },
+    { "api_name": "Kiosk_Start_Time", "label": "Kiosk Start Time", "type": "datetime", "read_only": true, "required": false },
+    { "api_name": "Kiosk_end_time", "label": "Kiosk End Time", "type": "datetime", "read_only": true, "required": false },
+    { "api_name": "CurrentRecord", "label": "CurrentRecord", "type": "lookup", "lookup_module": "Quotes", "read_only": false, "required": false },
+    { "api_name": "Opvolging_offerte", "label": "Opvolging offerte", "type": "picklist", "picklist": ["telefonisch", "showroom"], "read_only": false, "required": false },
+    { "api_name": "Datum_Tijd_opvolging", "label": "Datum/Tijd opvolging", "type": "datetime", "read_only": false, "required": false }
+  ]
+}

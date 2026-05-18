@@ -28,7 +28,7 @@ const payloadSchema = z.object({
 
 type Payload = z.infer<typeof payloadSchema>;
 
-const TRIGGER_STATE: VoorinspectieState = "Akkoord";
+const TRIGGER_STATE: VoorinspectieState = "Akkoord klant VI";
 
 type VoorinspectieRecord = {
   [k: string]: unknown;

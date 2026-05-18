@@ -1,0 +1,231 @@
+{
+  "api_name": "Stalen",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Staalnaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Staal-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Record_Image",
+      "label": "Staal Afbeelding",
+      "type": "profileimage",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Contactpersoon",
+      "label": "Contactpersoon",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Producten",
+      "label": "Producten",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Locatie",
+      "label": "Locatie",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Locaties"
+    },
+    {
+      "api_name": "Adviseur",
+      "label": "Adviseur",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoon",
+      "label": "Telefoon",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "E_mail_Contact",
+      "label": "E-mail Contact",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Mobiel",
+      "label": "Mobiel",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verkoopkansen",
+      "label": "Verkoopkansen",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Afspraak",
+      "label": "Afspraak",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Showroom"
+    },
+    {
+      "api_name": "Planning_retour",
+      "label": "Planning retour",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Meegegeven_op",
+      "label": "Meegegeven op",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Retour_ontvangen",
+      "label": "Retour ontvangen",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Dagen_op_zicht",
+      "label": "Dagen op zicht",
+      "type": "double",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Offerte",
+      "label": "Offerte",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Quotes"
+    },
+    {
+      "api_name": "Verkoopkans",
+      "label": "Verkoopkans",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Deals"
+    },
+    {
+      "api_name": "Locatie_staal_retour",
+      "label": "Locatie staal retour",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    }
+  ]
+}

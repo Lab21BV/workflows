@@ -1,0 +1,1068 @@
+{
+  "api_name": "Ruimtes",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Ruimtenaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Ruimte-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Email",
+      "label": "E-mail",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Afmeting_in_m2",
+      "label": "Afmeting/m²",
+      "type": "double",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Type",
+      "label": "Type ruimte",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Aanbouw",
+        "Badkamer",
+        "Berging",
+        "Extra kamer I",
+        "Extra kamer II",
+        "Extra kamer III",
+        "Extra kamer IV",
+        "Gang/Hal",
+        "Hal",
+        "Kelder",
+        "Keuken",
+        "Overloop",
+        "Slaapkamer I",
+        "Slaapkamer II",
+        "Slaapkamer III",
+        "Slaapkamer IV",
+        "Technische ruimte",
+        "Trap",
+        "Trap naar kelder",
+        "Trap naar zolder",
+        "Trappenkast)",
+        "WC",
+        "Woonkamer",
+        "Zolder"
+      ]
+    },
+    {
+      "api_name": "Nummer",
+      "label": "Ruimte nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "RUN${dd}${MM}${yy}"
+    },
+    {
+      "api_name": "Snijverlies",
+      "label": "Snijverlies",
+      "type": "percent",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Vochtmeting",
+      "label": "Vochtmeting",
+      "type": "percent",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Randafwer",
+      "label": "Hoge plinten gelegd door",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Lab21",
+        "Klant",
+        "3e partij"
+      ]
+    },
+    {
+      "api_name": "Dilatatie_nodig",
+      "label": "Dilatatie nodig zwevende vloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Wordt_gelegd_door",
+      "label": "Wordt gelegd door",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Lab21",
+        "Klant",
+        "3e partij"
+      ]
+    },
+    {
+      "api_name": "Type_basisvloer",
+      "label": "Basisvloer volgens legger",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Airbase",
+        "Alle",
+        "Anders",
+        "Anhydriet",
+        "Anhydriet (zwevend)",
+        "Beton gevlinderd",
+        "EcoFloor",
+        "Fermacell",
+        "Gietvloer",
+        "Grindvloer",
+        "Grindvloer (open)",
+        "Houten planken",
+        "Houten planken (stabiel)",
+        "Houten platen",
+        "Jumpax",
+        "Brio",
+        "Laminaat",
+        "Leisteen",
+        "Magnesiet",
+        "Marmoleum/Linoleum",
+        "Mortel",
+        "Onbekend",
+        "Parket",
+        "Parketvloer (verlijmd)",
+        "Bestaande parketvloer",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt",
+        "Tegel",
+        "Travertin",
+        "Troffelvloer",
+        "VarioKomp",
+        "Vloerkleed",
+        "Zandcement",
+        "Zandcement zwevend",
+        "Zandsteen",
+        "Zeil"
+      ]
+    },
+    {
+      "api_name": "Huidige_vloer",
+      "label": "Huidige basisvloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Airbase",
+        "Alle",
+        "Anders",
+        "Anhydriet",
+        "Anhydriet (zwevend)",
+        "Beton gevlinderd",
+        "EcoFloor",
+        "Fermacell",
+        "Gietvloer",
+        "Grindvloer",
+        "Grindvloer (open)",
+        "Houten planken",
+        "Houten planken (stabiel)",
+        "Houten platen",
+        "Jumpax",
+        "Brio",
+        "Laminaat",
+        "Leisteen",
+        "Magnesiet",
+        "Marmoleum/Linoleum",
+        "Mortel",
+        "Onbekend",
+        "Parket",
+        "Parketvloer (verlijmd)",
+        "Bestaande parketvloer",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt",
+        "Tegel",
+        "Travertin",
+        "Troffelvloer",
+        "VarioKomp",
+        "Vloerkleed",
+        "Zandcement",
+        "Zandcement zwevend",
+        "Zandsteen",
+        "Zeil"
+      ]
+    },
+    {
+      "api_name": "Convectorput",
+      "label": "Convectorput",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Luik",
+      "label": "Luik",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Mat",
+      "label": "Mat",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Opmerkingen",
+      "label": "Opmerkingen",
+      "type": "textarea",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Soort_vloer",
+      "label": "Soort vloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Lijm PVC",
+        "Lijm PVC visgraat",
+        "Lijm PVC hongaarse punt / weense punt",
+        "Lijm PVC tegels",
+        "Klik PVC",
+        "Klik PVC visgraat",
+        "Klik PVC tegels",
+        "Laminaat",
+        "Laminaat visgraat",
+        "Laminaat tegels",
+        "Hout verlijmd",
+        "Hout zwevend"
+      ]
+    },
+    {
+      "api_name": "Profiel_nodig",
+      "label": "Profiel nodig",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Ja, 2",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Glooiing_in_ondergrond",
+      "label": "Glooiing in ondergrond",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Rechte_muur",
+      "label": "Rechte muur",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Welk_profiel",
+      "label": "Welk profiel 1",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Afkitten_Lijm_PVC_m1",
+      "label": "Afkitten lijm PVC m1",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Snijverlies_hoge_plint",
+      "label": "Snijverlies hoge plint",
+      "type": "percent",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Aantal_m1_profiel",
+      "label": "Aantal profielen 1",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Toilet",
+      "label": "Toilet",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Kast",
+      "label": "Kast",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Platte_plint_nodig",
+      "label": "Plint nodig",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Technische_ruimte",
+      "label": "Technische ruimte",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Afbeelding_Upload",
+      "label": "Afbeelding Upload (Aannemer)",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Voorinspectie2",
+      "label": "Voorinspecties",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Contactpersoon_Klant",
+      "label": "Contactpersoon",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Welke_vloer_uit_order",
+      "label": "Welke vloer uit order?",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Products"
+    },
+    {
+      "api_name": "Afbeelding_Upload_Relatie",
+      "label": "Afbeelding Upload (Relatie)",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Afbeelding_Upload_Ruimte",
+      "label": "Afbeelding Upload (Ruimte)",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Aanbouw",
+      "label": "Aanbouw",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Nee",
+        "Ja, hele ruimte",
+        "Ja, gedeelte ruimte"
+      ]
+    },
+    {
+      "api_name": "Foto_vochtmeting",
+      "label": "Foto vochtmeting",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Kleur_muur",
+      "label": "Kleur muur",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Wit",
+        "Andere kleur"
+      ]
+    },
+    {
+      "api_name": "Aantal_m1_platte_plinten",
+      "label": "Aantal m1 platte plinten",
+      "type": "double",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Soort_profiel_1",
+      "label": "Soort profiel 1",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Dilatatieprofiel",
+        "Duo-Hoeklijn",
+        "Hoeklijnprofiel",
+        "Hoeklijn",
+        "Luikprofiel",
+        "Overgangsprofiel",
+        "Trapneusprofiel",
+        "Inegaliseerprofiel",
+        "Optie 1",
+        "Optie 2"
+      ]
+    },
+    {
+      "api_name": "Aantal_m1_hoge_plint_nieuw",
+      "label": "Aantal m1 hoge plint nieuw",
+      "type": "double",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Welk_profiel_2",
+      "label": "Welk profiel 2",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Aantal_profielen_2",
+      "label": "Aantal profielen 2",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Kleur_profiel_1",
+      "label": "Kleur profiel 1",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Brons",
+        "RVS",
+        "RVS geborsteld",
+        "Zilver",
+        "Zilver geborsteld",
+        "Zwart"
+      ]
+    },
+    {
+      "api_name": "Dikte_profiel_1",
+      "label": "Dikte profiel 1",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "1",
+        "2,5",
+        "2,7",
+        "3"
+      ]
+    },
+    {
+      "api_name": "Breedte_profiel_1",
+      "label": "Breedte profiel 1",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "37",
+        "24,5 x 30",
+        "4",
+        "10",
+        "17",
+        "20",
+        "14",
+        "22",
+        "5",
+        "8",
+        "14x43",
+        "Optie 1",
+        "Optie 2"
+      ]
+    },
+    {
+      "api_name": "Soort_profiel_2",
+      "label": "Soort profiel 2",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Dilatatieprofiel",
+        "Duo-Hoeklijn",
+        "Hoeklijnprofiel",
+        "Hoeklijn",
+        "Luikprofiel",
+        "Overgangsprofiel",
+        "Trapneusprofiel",
+        "Inegaliseerprofiel",
+        "Optie 1",
+        "Optie 2"
+      ]
+    },
+    {
+      "api_name": "Breedte_profiel_2",
+      "label": "Breedte profiel 2",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "37",
+        "24,5 x 30",
+        "4",
+        "10",
+        "17",
+        "20",
+        "14",
+        "22",
+        "5",
+        "8",
+        "14x43",
+        "Optie 1",
+        "Optie 2"
+      ]
+    },
+    {
+      "api_name": "Kleur_profiel_2",
+      "label": "Kleur profiel 2",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Brons",
+        "RVS",
+        "RVS geborsteld",
+        "Zilver",
+        "Zilver geborsteld",
+        "Zwart"
+      ]
+    },
+    {
+      "api_name": "Dikte_profiel_2",
+      "label": "Dikte profiel 2",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Optie 1",
+        "Optie 2",
+        "2,7",
+        "3"
+      ]
+    },
+    {
+      "api_name": "ID_Creator",
+      "label": "ID Creator",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Aannemers_Creator_ID",
+      "label": "ID Creator Aannemers",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Relatie",
+      "label": "Relatie",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Accounts"
+    },
+    {
+      "api_name": "E_mail_contact",
+      "label": "E-mail contact",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoon_contact",
+      "label": "Telefoon contact",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Voorinspecties_Test",
+      "label": "Voorinspectie",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Voorinspecties"
+    },
+    {
+      "api_name": "Huidige_eindvloer",
+      "label": "Huidige eindvloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Geen",
+        "Jumpax",
+        "Keramische tegel",
+        "Klik Marmoleum",
+        "Laminaat",
+        "Leisteen",
+        "Marmoleum/Linoleum",
+        "Marmoleum/Linoleum op jumpax",
+        "Parketvloer (verlijmd)",
+        "Parketvloer (zwevend)",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt los",
+        "Tapijt met ondertapijt los op ondergrond",
+        "Tapijt met ondertapijt verlijmd op ondergrond",
+        "Tapijt verlijmd",
+        "Tapijttegel los",
+        "Tapijttegel verlijmd",
+        "Travertin",
+        "Zandsteen",
+        "Zeil/Vinyl/Novilon los",
+        "Zeil/Vinyl/Novilon verlijmd"
+      ]
+    },
+    {
+      "api_name": "Eindvloer_volgens_legger",
+      "label": "Eindvloer volgens legger",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Geen",
+        "Jumpax",
+        "Keramische tegel",
+        "Klik Marmoleum",
+        "Laminaat",
+        "Leisteen",
+        "Marmoleum/Linoleum",
+        "Marmoleum/Linoleum op jumpax",
+        "Parketvloer (verlijmd)",
+        "Parketvloer (zwevend)",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt los",
+        "Tapijt met ondertapijt los op ondergrond",
+        "Tapijt met ondertapijt verlijmd op ondergrond",
+        "Tapijt verlijmd",
+        "Tapijttegel los",
+        "Tapijttegel verlijmd",
+        "Travertin",
+        "Zandsteen",
+        "Zeil/Vinyl/Novilon los",
+        "Zeil/Vinyl/Novilon verlijmd"
+      ]
+    },
+    {
+      "api_name": "Configurator",
+      "label": "Configurator",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Droogbouw",
+        "Gordijn",
+        "Hor",
+        "Trap",
+        "Verwijderen",
+        "Vloeren",
+        "Vloerverwarming",
+        "Raamdecoratie"
+      ]
+    },
+    {
+      "api_name": "Leiding_dekvloer_aanwezig",
+      "label": "Leiding dekvloer aanwezig",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Optie 1",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Droogbouwvloer",
+      "label": "Droogbouwvloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Knauf/fermacell",
+        "Knauf Brio 23 (WF) of fermacell 2E22/2E26 of 2E33 geschikt vloerverwarming"
+      ]
+    },
+    {
+      "api_name": "Dekvloer",
+      "label": "Dekvloer",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Airbase",
+        "Alle",
+        "Anders",
+        "Anhydriet",
+        "Anhydriet (zwevend)",
+        "Beton gevlinderd",
+        "EcoFloor",
+        "Fermacell",
+        "Gietvloer",
+        "Grindvloer",
+        "Grindvloer (open)",
+        "Houten planken",
+        "Houten planken (stabiel)",
+        "Houten platen",
+        "Jumpax",
+        "Brio",
+        "Laminaat",
+        "Leisteen",
+        "Magnesiet",
+        "Marmoleum/Linoleum",
+        "Mortel",
+        "Onbekend",
+        "Parket",
+        "Parketvloer (verlijmd)",
+        "Bestaande parketvloer",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt",
+        "Tegel",
+        "Travertin",
+        "Troffelvloer",
+        "VarioKomp",
+        "Vloerkleed",
+        "Zandcement",
+        "Zandcement zwevend",
+        "Zandsteen",
+        "Zeil"
+      ]
+    },
+    {
+      "api_name": "Aanvoer_Retourleiding_aanwezig",
+      "label": "Aanvoer / Retourleiding aanwezig",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Afbeelding_plek_verdeler",
+      "label": "Afbeelding plek verdeler",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Afbeelding_Ruimte",
+      "label": "Afbeelding Ruimte",
+      "type": "imageupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Stopcontact_aanwezig",
+      "label": "Stopcontact aanwezig",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Etage_of_Begane_grond",
+      "label": "Etage of Begane grond",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Etage",
+        "Begane grond"
+      ]
+    },
+    {
+      "api_name": "Positie_verder",
+      "label": "Positie verder",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Verdieping",
+      "label": "Verdieping",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Begane grond",
+        "Eerste verdieping",
+        "Tweede verdieping",
+        "Derde verdieping",
+        "Vierde verdieping",
+        "Kelder",
+        "Zolder"
+      ]
+    },
+    {
+      "api_name": "Type_vloerverwarming",
+      "label": "Type vloerverwarming",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Geen",
+        "Electrisch",
+        "Gebonden",
+        "Gefreesd",
+        "Noppen platen"
+      ]
+    },
+    {
+      "api_name": "Ruimte_nr",
+      "label": "Ruimte nr.",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Aantal_hoeken_verstek",
+      "label": "Aantal hoeken verstek",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Bovenkant_hoge_plint_afkitten",
+      "label": "Bovenkant hoge plint afkitten?",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Binnenhoek_hoge_plint_verstekzagen",
+      "label": "Binnenhoek hoge plint verstekzagen?",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Ja",
+        "Nee"
+      ]
+    },
+    {
+      "api_name": "Verkooporder",
+      "label": "Verkooporders",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    }
+  ]
+}

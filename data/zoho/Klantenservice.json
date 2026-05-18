@@ -1,0 +1,376 @@
+{
+  "api_name": "Klantenservice",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Klantenservicenaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Klantenservice-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Inschatting_fin_schade_omschrijving",
+      "label": "Schade omschrijving",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Omschrijving_klacht",
+      "label": "Omschrijving Relatie",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Gewicht_ticket",
+      "label": "Gewicht ticket",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Inschatting_financi_le_schade",
+      "label": "Inschatting financiële schade",
+      "type": "double",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Legger_hoofdorder",
+      "label": "Legger",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Vendors"
+    },
+    {
+      "api_name": "Soort_klacht",
+      "label": "Soort",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Optie 1",
+        "Optie 2"
+      ]
+    },
+    {
+      "api_name": "Status_klacht",
+      "label": "Fase",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Optie 1",
+        "Optie 2",
+        "In afwachting van reaktie klant"
+      ]
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Verkooporder",
+      "label": "Verkooporder",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Sales_Orders"
+    },
+    {
+      "api_name": "Klant",
+      "label": "Relatie",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Servicenummer",
+      "label": "Klantenservices nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "SUP${dd}${MM}${yy}"
+    },
+    {
+      "api_name": "Accountmanager",
+      "label": "Accountmanager",
+      "type": "userlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Strategie",
+      "label": "Strategie",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Relatie_klant",
+      "label": "Relatie Klant",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Zeer boos",
+        "Boos",
+        "Neutral",
+        "Vriendelijk",
+        "Goede relatie"
+      ]
+    },
+    {
+      "api_name": "Datum_opgelost",
+      "label": "Datum oplossing",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Ruimte",
+      "label": "Ruimte",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Bewoond, vol met meubels",
+        "Bewoond, geen zware meubels",
+        "Niet bewoond"
+      ]
+    },
+    {
+      "api_name": "Fysieke_omstandigheid",
+      "label": "Fysieke omstandigheid",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Jong",
+        "Bejaard",
+        "Zwangere vrouw",
+        "Ziek"
+      ]
+    },
+    {
+      "api_name": "Omschr_oplossing",
+      "label": "Omschr. oplossing",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Gew_dat_oplossing",
+      "label": "Gew. dat. oplossing",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Oplossing",
+      "label": "Oplossing",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Herstel uitgevoerd door oorspronkelijke aannemer",
+        "Herstel uitgevoerd door nieuwe aannemer",
+        "Compensatie met VSO",
+        "Compensatie zonder VSO",
+        "Compensatie op basis van uitspraak UZ",
+        "Compensatie op basis van uitspraak rechtbank",
+        "Volledig afgewezen",
+        "Ontbinden"
+      ]
+    },
+    {
+      "api_name": "Type",
+      "label": "Type",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Klacht",
+        "Service",
+        "Klacht en service"
+      ]
+    },
+    {
+      "api_name": "Foto_uploaden",
+      "label": "Foto uploaden",
+      "type": "fileupload",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Order_voor_oplossing",
+      "label": "Order voor oplossing",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Oorzaak",
+      "label": "Oorzaak",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Aannemer",
+        "Leverancier",
+        "Lab21 verkoper",
+        "Lab21 accountmanager",
+        "Lab21 inkoop en planning",
+        "Lab21 legger management"
+      ]
+    },
+    {
+      "api_name": "Omschr_oorzaak",
+      "label": "Omschr. oorzaak",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Doorbelasting_leverancier",
+      "label": "Doorbelasting leverancier",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Doorbelasting_aannemer",
+      "label": "Doorbelasting aannemer",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Module_retour_later_te_vervangen",
+      "label": "Retour - later te vervangen",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Terugbetaling_later_in_te_vullen",
+      "label": "Terugbetaling later in te vullen",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Zichtbaar_portal",
+      "label": "Zichtbaar portal",
+      "type": "boolean",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "ID_Creator",
+      "label": "ID Creator",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    }
+  ]
+}

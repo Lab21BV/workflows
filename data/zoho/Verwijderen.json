@@ -1,0 +1,276 @@
+{
+  "api_name": "Verwijderen",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "VERWIJDEREN-"
+    },
+    {
+      "api_name": "Owner",
+      "label": "Verwijderen-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Aantal",
+      "label": "Aantal (minimum)",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Product",
+      "label": "Service/Product",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Products"
+    },
+    {
+      "api_name": "Berekening",
+      "label": "Berekening",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Invulbaar",
+        "Maat",
+        "Omrekenen",
+        "Prijs/meter",
+        "Vaste prijs"
+      ]
+    },
+    {
+      "api_name": "Onderdeel",
+      "label": "Onderdeel",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Diensten/Opties",
+        "Ondervloer/Renovatie"
+      ]
+    },
+    {
+      "api_name": "Verplicht",
+      "label": "Conditie",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Verplicht",
+        "Keuze",
+        "Vervolg",
+        "Optioneel",
+        "Geen"
+      ]
+    },
+    {
+      "api_name": "Product_Code",
+      "label": "Product Code",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Prijs_per_unit",
+      "label": "Prijs per unit",
+      "type": "currency",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Configurator",
+      "label": "Configurator",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Droogbouw",
+        "Gordijn",
+        "Hor",
+        "Trap",
+        "Verwijderen",
+        "Vloeren",
+        "Vloerverwarming",
+        "Raamdecoratie"
+      ]
+    },
+    {
+      "api_name": "Van",
+      "label": "Van",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tot",
+      "label": "Tot",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Bestaande_vloer",
+      "label": "Bestaande vloer",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Alle",
+        "Jumpax",
+        "Keramische tegel",
+        "Klik Marmoleum",
+        "Laminaat",
+        "Leisteen",
+        "Marmoleum/Linoleum",
+        "Marmoleum/Linoleum op jumpax",
+        "Parketvloer (verlijmd)",
+        "Parketvloer (zwevend)",
+        "PVC (klik)",
+        "PVC (lijm)",
+        "Tapijt los",
+        "Tapijt met ondertapijt los op ondergrond",
+        "Tapijt met ondertapijt verlijmd op ondergrond",
+        "Tapijt verlijmd",
+        "Tapijttegel los",
+        "Tapijttegel verlijmd",
+        "Travertin",
+        "Zandsteen",
+        "Zeil/Vinyl/Novilon los",
+        "Zeil/Vinyl/Novilon verlijmd"
+      ]
+    },
+    {
+      "api_name": "Installatie_2_MS",
+      "label": "Installatie",
+      "type": "multiselectpicklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Alle",
+        "Gelijmd",
+        "Keuze",
+        "Zwevend"
+      ]
+    },
+    {
+      "api_name": "Conditie_keuze_vervolg",
+      "label": "Conditie gerelateerd",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Geen",
+        "Keuze",
+        "Optioneel",
+        "Verplicht"
+      ]
+    },
+    {
+      "api_name": "Omschrijving",
+      "label": "Omschrijving",
+      "type": "textarea",
+      "read_only": false,
+      "required": false
+    }
+  ]
+}

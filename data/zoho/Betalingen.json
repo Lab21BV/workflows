@@ -1,0 +1,229 @@
+{
+  "api_name": "Betalingen",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Betalingnaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Betaling-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Record_Image",
+      "label": "Betaling Afbeelding",
+      "type": "profileimage",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Verkooporder",
+      "label": "Verkooporder",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Sales_Orders"
+    },
+    {
+      "api_name": "Relatie",
+      "label": "Relatie",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Accounts"
+    },
+    {
+      "api_name": "Te_betalen",
+      "label": "Te betalen",
+      "type": "currency",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Ontvangen",
+      "label": "Ontvangen",
+      "type": "currency",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Openstaand",
+      "label": "Openstaand/restant",
+      "type": "formula",
+      "read_only": true,
+      "required": false,
+      "formula": true
+    },
+    {
+      "api_name": "Ontvangen_via",
+      "label": "Ontvangen via",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Pinbetaling showroom",
+        "iDeal",
+        "Contant"
+      ]
+    },
+    {
+      "api_name": "Betaallink",
+      "label": "Betaallink",
+      "type": "website",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Gewenste_leverdatum",
+      "label": "Gewenste leverdatum",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Contactpersoon",
+      "label": "Contactpersoon",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "Orderdatum",
+      "label": "Orderdatum",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "ID_Creator_Klanten",
+      "label": "ID Creator Klanten",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Betaaldatum",
+      "label": "Verwachte betaaldatum",
+      "type": "formula",
+      "read_only": true,
+      "required": false,
+      "formula": true
+    },
+    {
+      "api_name": "Type_betaling",
+      "label": "Betaling",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Vooruit",
+        "Rest",
+        "Volledig"
+      ]
+    },
+    {
+      "api_name": "Ontvangen_op",
+      "label": "Ontvangen op",
+      "type": "date",
+      "read_only": false,
+      "required": false
+    }
+  ]
+}

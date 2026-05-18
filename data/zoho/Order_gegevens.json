@@ -1,0 +1,17 @@
+{
+  "api_name": "Order_gegevens",
+  "kind": "kiosk_process_flow",
+  "attached_to": "Sales_Orders",
+  "fields": [
+    { "api_name": "id", "label": "Record-ID", "type": "bigint", "read_only": true, "required": false },
+    { "api_name": "Owner", "label": "Eigenaar", "type": "ownerlookup", "read_only": true, "required": false },
+    { "api_name": "Kiosk_Start_Time", "label": "Kiosk Start Time", "type": "datetime", "read_only": true, "required": false },
+    { "api_name": "Kiosk_end_time", "label": "Kiosk End Time", "type": "datetime", "read_only": true, "required": false },
+    { "api_name": "CurrentRecord", "label": "CurrentRecord", "type": "lookup", "lookup_module": "Sales_Orders", "read_only": false, "required": false },
+    { "api_name": "Soort_bebouwing", "label": "Soort bebouwing", "type": "picklist", "picklist": ["2-onder-1-kap-woning", "Appartement", "Bungalow", "Hoekwoning", "Loft", "Maisonnette", "Studio", "Tussenwoning", "Vrijstaande woning"], "read_only": false, "required": false },
+    { "api_name": "Aanbouw", "label": "Aanbouw", "type": "picklist", "picklist": ["Ja", "Nee"], "read_only": false, "required": false },
+    { "api_name": "Muur_verwijderen", "label": "Muur verwijderen", "type": "picklist", "picklist": ["Ja", "Nee"], "read_only": false, "required": false },
+    { "api_name": "Constructie", "label": "Constructie", "type": "picklist", "picklist": ["Optie 1", "Optie 2"], "read_only": false, "required": false },
+    { "api_name": "Type_basisvloer", "label": "Type basisvloer", "type": "textarea", "read_only": false, "required": false }
+  ]
+}

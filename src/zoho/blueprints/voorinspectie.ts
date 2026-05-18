@@ -1,82 +1,77 @@
 /**
- * Voorinspectie blueprint — afgeleid van de Status (Fase) picklist op
- * module `Voorinspecties` (28 states). De transities hier zijn een eerste
- * lezing van de naamgeving — verifieer/correct ze tegen de daadwerkelijke
- * Zoho Blueprint definitie in Setup → Automation → Blueprints.
+ * Voorinspectie blueprint — uit live Zoho-metadata van module `Voorinspecties`.
+ * Bron: `data/zoho/Voorinspecties.json` (Status veld, actual_values).
+ *
+ * Let op: dit zijn de échte API-waarden — de Zoho UI toont vaak afwijkende
+ * Nederlandse display-labels. Bij PUT/POST naar de API gebruik je deze.
+ *
+ * De transities zijn een eerste lezing van de naamgeving — verifieer ze in
+ * Zoho Setup → Automation → Blueprints → Voorinspectie.
  */
 
 export const VOORINSPECTIE_STATES = [
-  "Aangemaakt",
   "Start proces",
   "Datum opties voorstellen",
   "Wachten op bevestiging",
-  "Opnieuw wachten op bevestigen",
   "Datum afgesproken",
-  "Bevestigen aan aannemer",
+  "Geen reactie",
+  "Accountmanager belt klant",
+  "Legger toewijzen",
+  "Bevestigen VI aan aannemer",
   "Wachten op legger",
+  "Legger bevestigd",
   "Legger akkoord",
-  "Afwijzing legger",
-  "Legger Belt Relatie",
-  "Accountmanager Belt Relatie",
-  "Gepland",
+  "Legger afgewezen",
+  "Legger belt klant",
+  "Datum plannen",
   "Tussenfase Datum plannen",
-  "Uitgevoerd",
+  "Wachten op uitvoering",
+  "VI uitgevoerd",
   "Wachten verzending Checklist",
-  "1ste check",
-  "2de check",
-  "Gecheckt",
-  "Klant niet akkoord met VI",
-  "Relatie niet akkoord",
-  "Meerprijs",
+  "VI 1ste check",
+  "VI 2de check",
   "Extra kosten",
   "Geen extra kosten",
-  "Akkoord",
-  "Bevestiging legger",
+  "Meerprijs",
+  "Akkoord klant VI",
+  "Klant niet akkoord met VI",
+  "Klant niet akkoord",
   "Order definitief",
   "Einde proces voorinspectie",
 ] as const;
 
 export type VoorinspectieState = (typeof VOORINSPECTIE_STATES)[number];
 
-export const VOORINSPECTIE_REACTIE = ["1e poging", "2e poging"] as const;
-export type VoorinspectieReactie = (typeof VOORINSPECTIE_REACTIE)[number];
-
 /**
- * Edges of the blueprint. The Zoho rest API does not expose blueprint
- * transitions — these are the most plausible flow inferred from labels.
- * Verify each entry against Setup → Blueprints → Voorinspectie.
+ * Inferred transition graph. Verify each edge against the Blueprint in Zoho.
  */
 export const VOORINSPECTIE_TRANSITIONS: Record<VoorinspectieState, VoorinspectieState[]> = {
-  Aangemaakt: ["Start proces"],
-  "Start proces": ["Datum opties voorstellen"],
+  "Start proces": ["Datum opties voorstellen", "Legger toewijzen"],
   "Datum opties voorstellen": ["Wachten op bevestiging"],
-  "Wachten op bevestiging": [
-    "Datum afgesproken",
-    "Opnieuw wachten op bevestigen",
-    "Accountmanager Belt Relatie",
-  ],
-  "Opnieuw wachten op bevestigen": ["Datum afgesproken", "Accountmanager Belt Relatie"],
-  "Accountmanager Belt Relatie": ["Datum opties voorstellen", "Klant niet akkoord met VI"],
-  "Datum afgesproken": ["Bevestigen aan aannemer"],
-  "Bevestigen aan aannemer": ["Wachten op legger"],
-  "Wachten op legger": ["Legger akkoord", "Afwijzing legger", "Legger Belt Relatie"],
-  "Legger Belt Relatie": ["Legger akkoord", "Afwijzing legger"],
-  "Legger akkoord": ["Gepland"],
-  "Afwijzing legger": ["Tussenfase Datum plannen"],
+  "Wachten op bevestiging": ["Datum afgesproken", "Geen reactie"],
+  "Geen reactie": ["Accountmanager belt klant"],
+  "Accountmanager belt klant": ["Datum afgesproken", "Klant niet akkoord met VI"],
+  "Datum afgesproken": ["Legger toewijzen"],
+  "Legger toewijzen": ["Bevestigen VI aan aannemer"],
+  "Bevestigen VI aan aannemer": ["Wachten op legger"],
+  "Wachten op legger": ["Legger bevestigd", "Legger afgewezen", "Legger belt klant"],
+  "Legger belt klant": ["Legger akkoord", "Legger afgewezen"],
+  "Legger bevestigd": ["Legger akkoord"],
+  "Legger akkoord": ["Datum plannen"],
+  "Legger afgewezen": ["Tussenfase Datum plannen"],
   "Tussenfase Datum plannen": ["Datum opties voorstellen"],
-  Gepland: ["Uitgevoerd"],
-  Uitgevoerd: ["Wachten verzending Checklist"],
-  "Wachten verzending Checklist": ["1ste check"],
-  "1ste check": ["2de check", "Gecheckt"],
-  "2de check": ["Gecheckt"],
-  Gecheckt: ["Extra kosten", "Geen extra kosten"],
+  "Datum plannen": ["Wachten op uitvoering"],
+  "Wachten op uitvoering": ["VI uitgevoerd"],
+  "VI uitgevoerd": ["Wachten verzending Checklist"],
+  "Wachten verzending Checklist": ["VI 1ste check"],
+  "VI 1ste check": ["VI 2de check", "Extra kosten", "Geen extra kosten"],
+  "VI 2de check": ["Extra kosten", "Geen extra kosten"],
   "Extra kosten": ["Meerprijs"],
-  "Geen extra kosten": ["Akkoord"],
-  Meerprijs: ["Akkoord", "Relatie niet akkoord"],
-  "Relatie niet akkoord": ["Einde proces voorinspectie"],
+  "Geen extra kosten": ["Akkoord klant VI"],
+  Meerprijs: ["Akkoord klant VI", "Klant niet akkoord"],
+  "Akkoord klant VI": ["Order definitief"],
+  "Klant niet akkoord": ["Einde proces voorinspectie"],
   "Klant niet akkoord met VI": ["Einde proces voorinspectie"],
-  Akkoord: ["Bevestiging legger"],
-  "Bevestiging legger": ["Order definitief"],
   "Order definitief": ["Einde proces voorinspectie"],
   "Einde proces voorinspectie": [],
 };
@@ -88,3 +83,6 @@ export function canTransition(from: VoorinspectieState, to: VoorinspectieState):
 export function isTerminal(state: VoorinspectieState): boolean {
   return VOORINSPECTIE_TRANSITIONS[state].length === 0;
 }
+
+export const VOORINSPECTIE_REACTIE = ["1e poging", "2e poging"] as const;
+export type VoorinspectieReactie = (typeof VOORINSPECTIE_REACTIE)[number];
