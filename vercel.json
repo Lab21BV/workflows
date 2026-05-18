@@ -1,13 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "echo 'no build needed — api/*.ts is compiled by Vercel'",
-  "outputDirectory": ".",
-  "functions": {
-    "api/**/*.ts": {
-      "memory": 512,
-      "maxDuration": 60
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/showroom-review-followup",

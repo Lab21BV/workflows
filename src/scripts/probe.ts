@@ -6,7 +6,7 @@
  *   pnpm zoho:probe Planningen
  */
 
-import { ZohoClient } from "../zoho/client.js";
+import { ZohoClient } from "../zoho/client";
 
 async function main() {
   const module = process.argv[2];

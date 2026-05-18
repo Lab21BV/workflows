@@ -3,8 +3,8 @@ import {
   canTransition,
   type VoorinspectieState,
   VOORINSPECTIE_STATES,
-} from "../zoho/blueprints/voorinspectie.js";
-import type { Workflow, WorkflowContext, WorkflowResult } from "./types.js";
+} from "../zoho/blueprints/voorinspectie";
+import type { Workflow, WorkflowContext, WorkflowResult } from "./types";
 
 /**
  * Workflow: when a Voorinspectie transitions to "Akkoord" (i.e. customer

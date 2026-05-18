@@ -9,8 +9,8 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { ZohoClient } from "../zoho/client.js";
-import { MODULES } from "../zoho/modules.js";
+import { ZohoClient } from "../zoho/client";
+import { MODULES } from "../zoho/modules";
 
 const OUT_DIR = resolve(process.cwd(), "data/zoho");
 

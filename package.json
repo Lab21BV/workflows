@@ -2,24 +2,28 @@
   "name": "lab21-workflows",
   "version": "0.0.1",
   "private": true,
-  "description": "Code-based rebuild of Zoho CRM workflows for LAB21",
-  "type": "module",
+  "description": "Code-based rebuild of Zoho CRM workflows for LAB21 + tijdlijn UI",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
-    "zoho:auth": "tsx src/scripts/auth.ts",
-    "zoho:probe": "tsx src/scripts/probe.ts"
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "zoho:probe": "tsx src/scripts/probe.ts",
+    "zoho:sync": "tsx src/scripts/sync-metadata.ts"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "next": "^15.1.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }

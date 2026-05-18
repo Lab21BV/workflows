@@ -1,5 +1,5 @@
-import type { ZohoClient } from "./client.js";
-import type { ModuleKey } from "./modules.js";
+import type { ZohoClient } from "./client";
+import type { ModuleKey } from "./modules";
 
 export type ZohoRecord = Record<string, unknown> & { id: string };
 

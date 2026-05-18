@@ -1,6 +1,6 @@
-import { ZohoClient, RecordsApi } from "./zoho/index.js";
-import { getWorkflow } from "./workflows/registry.js";
-import type { WorkflowContext, WorkflowLogger } from "./workflows/types.js";
+import { ZohoClient, RecordsApi } from "./zoho/index";
+import { getWorkflow } from "./workflows/registry";
+import type { WorkflowContext, WorkflowLogger } from "./workflows/types";
 
 const consoleLogger: WorkflowLogger = {
   info: (msg, meta) => console.log(JSON.stringify({ level: "info", msg, ...meta })),

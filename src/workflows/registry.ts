@@ -1,8 +1,8 @@
-import type { Workflow } from "./types.js";
-import { voorinspectieAfgerond } from "./voorinspectie-afgerond.js";
-import { voorinspectieNoResponse } from "./voorinspectie-no-response.js";
-import { showroomAfspraakGeweest } from "./showroom-afspraak-geweest.js";
-import { klantenserviceNieuw } from "./klantenservice-nieuw.js";
+import type { Workflow } from "./types";
+import { voorinspectieAfgerond } from "./voorinspectie-afgerond";
+import { voorinspectieNoResponse } from "./voorinspectie-no-response";
+import { showroomAfspraakGeweest } from "./showroom-afspraak-geweest";
+import { klantenserviceNieuw } from "./klantenservice-nieuw";
 
 export const WORKFLOWS: Record<string, Workflow<unknown>> = {
   [voorinspectieAfgerond.id]: voorinspectieAfgerond as Workflow<unknown>,

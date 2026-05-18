@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { Workflow, WorkflowContext, WorkflowResult } from "./types.js";
-import { SHOWROOM_FASES, type ShowroomFase } from "../zoho/blueprints/showroom.js";
+import type { Workflow, WorkflowContext, WorkflowResult } from "./types";
+import { SHOWROOM_FASES, type ShowroomFase } from "../zoho/blueprints/showroom";
 
 /**
  * Workflow: wanneer een Showroom-afspraak op Fase=Geweest komt, leg dat vast

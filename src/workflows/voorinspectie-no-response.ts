@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Workflow, WorkflowContext, WorkflowResult } from "./types.js";
+import type { Workflow, WorkflowContext, WorkflowResult } from "./types";
 
 /**
  * Cron-getriggerde workflow: Voorinspecties die >= 3 dagen vastzitten in

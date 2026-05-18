@@ -1,5 +1,5 @@
-import type { ZohoClient } from "../zoho/client.js";
-import type { RecordsApi, ZohoRecord } from "../zoho/records.js";
+import type { ZohoClient } from "../zoho/client";
+import type { RecordsApi, ZohoRecord } from "../zoho/records";
 
 export interface WorkflowContext {
   zoho: ZohoClient;

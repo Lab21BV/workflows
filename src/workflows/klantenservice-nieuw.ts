@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { Workflow, WorkflowContext, WorkflowResult } from "./types.js";
-import { KS_TYPES, type KsType } from "../zoho/blueprints/klantenservice.js";
+import type { Workflow, WorkflowContext, WorkflowResult } from "./types";
+import { KS_TYPES, type KsType } from "../zoho/blueprints/klantenservice";
 
 /**
  * Webhook-getriggerde workflow: nieuwe Klantenservice klacht binnen → toewijzen
