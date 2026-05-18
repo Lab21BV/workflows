@@ -42,20 +42,25 @@ npx tsx src/scripts/sync-metadata.ts Voorinspecties Planningen
 ## Structuur
 
 ```
+api/
+  webhooks/zoho.ts            Zoho → workflow router (Vercel function)
+  cron/*.ts                   Vercel cron jobs
 src/
   zoho/
-    client.ts         REST-client + OAuth refresh
-    records.ts        CRUD helpers
-    modules.ts        Module-registry (api_name → label)
-    blueprints/       Per module: states + transitions
-  workflows/          Per regel één file (trigger + run)
-  scripts/            sync-metadata, probe
+    client.ts                 REST-client + OAuth refresh
+    records.ts                CRUD helpers
+    modules.ts                Module-registry (api_name → label)
+    blueprints/               Per module: states + transitions
+  workflows/                  Per regel één file (trigger + run)
+  scripts/                    sync-metadata, probe
 data/
-  zoho/               Versioned snapshot van module-metadata
+  zoho/                       Versioned snapshot van module-metadata
 docs/
-  inventory.md            Modules + status overzicht
+  inventory.md                Modules + status overzicht
   voorinspectie-blueprint.md
   process-flows.md
+  deployment.md               Vercel setup
+vercel.json                   Cron schedule + function config
 ```
 
 ## Wat er al gereconstrueerd is
@@ -69,6 +74,9 @@ docs/
 | Betalingen types | data/zoho/Betalingen.json | src/zoho/blueprints/betalingen.ts |
 | 17 modules met velden + picklists | data/zoho/*.json | — |
 | `voorinspectie-akkoord` workflow | — | src/workflows/voorinspectie-afgerond.ts |
+| `showroom-afspraak-geweest` workflow | — | src/workflows/showroom-afspraak-geweest.ts |
+| Zoho webhook receiver (Vercel function) | — | api/webhooks/zoho.ts |
+| Cron: review-followup na showroom | — | api/cron/showroom-review-followup.ts |
 
 ## Wat NOG niet uit Zoho komt
 

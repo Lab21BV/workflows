@@ -1,0 +1,344 @@
+{
+  "api_name": "Displays",
+  "fields": [
+    {
+      "api_name": "Record_Status__s",
+      "label": "Record Status",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "Available",
+        "Draft",
+        "Trash"
+      ]
+    },
+    {
+      "api_name": "Name",
+      "label": "Displaynaam",
+      "type": "text",
+      "read_only": false,
+      "required": true
+    },
+    {
+      "api_name": "Owner",
+      "label": "Display-eigenaar",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Email",
+      "label": "E-mail",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_By",
+      "label": "Gemaakt door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_By",
+      "label": "Gewijzigd door",
+      "type": "ownerlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Created_Time",
+      "label": "Aanmaaktijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Modified_Time",
+      "label": "Wijzigingstijd",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Last_Activity_Time",
+      "label": "Tijd laatste activiteit",
+      "type": "datetime",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Tag",
+      "label": "Tag",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Unsubscribed_Mode",
+      "label": "Modus uitgeschreven",
+      "type": "picklist",
+      "read_only": true,
+      "required": false,
+      "picklist": [
+        "Consent form",
+        "Manual",
+        "Unsubscribe link",
+        "Zoho campaigns"
+      ]
+    },
+    {
+      "api_name": "Unsubscribed_Time",
+      "label": "Tijdstip van uitschrijving",
+      "type": "datetime",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "id",
+      "label": "Record-ID",
+      "type": "bigint",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Locked__s",
+      "label": "Locked",
+      "type": "boolean",
+      "read_only": true,
+      "required": false
+    },
+    {
+      "api_name": "Locatie",
+      "label": "Locatie",
+      "type": "multiselectlookup",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Product",
+      "label": "Product",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Products"
+    },
+    {
+      "api_name": "Artikelnummer_leverancier",
+      "label": "Artikelnummer leverancier",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Product_Code",
+      "label": "Product Code",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Omschrijving",
+      "label": "Omschrijving",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Variant",
+      "label": "Variant",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Plank",
+        "Displaybord 100x60 cm",
+        "Displaybord 120x60 cm",
+        "Displaybord 100x100 cm",
+        "Showvloer"
+      ]
+    },
+    {
+      "api_name": "Prijs_per_unit",
+      "label": "Prijs per unit",
+      "type": "currency",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Prioriteit",
+      "label": "Prioriteit",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Sectie",
+      "label": "Sectie",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Laminaat Cotap",
+        "Laminaat van Hardseveld",
+        "Laminaat Gelista",
+        "Houten vloeren",
+        "Lijm Sensation",
+        "Lijm Signature",
+        "Lijm Dynamic (belakos)",
+        "Lijm visgraat",
+        "Lijm Hongaarse punt",
+        "Lijm Viva",
+        "Lijm Gelasta"
+      ]
+    },
+    {
+      "api_name": "Leveranciernaam",
+      "label": "Leverancier",
+      "type": "text",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Hoofdcategorie",
+      "label": "Hoofdcategorie",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "Vloeren",
+        "Gordijnen",
+        "Binnenzonwering",
+        "Shutter",
+        "Traprenovatie",
+        "Lattenwand",
+        "Accessoires",
+        "Dienst",
+        "Hardware",
+        "CRM Applications",
+        "Software",
+        "Raamdecoratie",
+        "Ondergrond",
+        "Vloerverwarming"
+      ]
+    },
+    {
+      "api_name": "Aantal",
+      "label": "Aantal",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Locatie_2",
+      "label": "Schap",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "SP11",
+        "SP21",
+        "SP31",
+        "SP41",
+        "SP51",
+        "SP61",
+        "SP71",
+        "SP81",
+        "SP12",
+        "SP13",
+        "SWB1",
+        "SWB2",
+        "SWB3",
+        "SBB1",
+        "SBB2",
+        "SBB3",
+        "SV1",
+        "SV2",
+        "SV3"
+      ]
+    },
+    {
+      "api_name": "Uitgeleend_aan",
+      "label": "Contactpersoon",
+      "type": "lookup",
+      "read_only": false,
+      "required": false,
+      "lookup_module": "Contacts"
+    },
+    {
+      "api_name": "E_mail_contact",
+      "label": "E-mail contact",
+      "type": "email",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Telefoon_contact",
+      "label": "Telefoon contact",
+      "type": "phone",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Lengte_showvloer",
+      "label": "Lengte showvloer",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Breedte_showvloer",
+      "label": "Breedte showvloer",
+      "type": "integer",
+      "read_only": false,
+      "required": false
+    },
+    {
+      "api_name": "Displays_nummer",
+      "label": "Display nummer",
+      "type": "autonumber",
+      "read_only": false,
+      "required": false,
+      "autonumber_prefix": "DI-${MM}${yyyy}-"
+    },
+    {
+      "api_name": "Subcategorie",
+      "label": "Subcategorie",
+      "type": "picklist",
+      "read_only": false,
+      "required": false,
+      "picklist": [
+        "-None-",
+        "PVC vloeren",
+        "Laminaat",
+        "Houten vloeren",
+        "Inbetween",
+        "Overgordijnen",
+        "Blackout",
+        "Dimout",
+        "Jaloezie",
+        "Reno trap",
+        "Duette",
+        "Plissé",
+        "Lijm PVC trap",
+        "Rolgordijnen",
+        "Onderhoudsmiddelen",
+        "Plinten en profielen",
+        "Ondervloeren",
+        "Legmaterialen",
+        "Legdienst vloeren",
+        "Verwijderen",
+        "Droogbouw",
+        "Ondergrond sanering",
+        "Vloerverwarming",
+        "Overige"
+      ]
+    }
+  ]
+}
