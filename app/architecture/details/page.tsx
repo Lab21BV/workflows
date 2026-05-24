@@ -914,6 +914,112 @@ type DecisionOutput = {
         </ul>
       </div>
 
+      <h2 id="ai-agents-planned-deferred">AI agents — planned, deferred</h2>
+      <div className="card">
+        <p style={{ color: "var(--fg)" }}>
+          AI agents are on the roadmap as a layer on top of this
+          architecture, not part of v1. They will support operational
+          workflows and help automate routine decisions. The detailed
+          design is intentionally deferred — there are good reasons to
+          wait.
+        </p>
+        <p style={{ color: "var(--fg)" }}><strong>Why deferred</strong></p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
+          <li>
+            The core system — portals, mirror DB, orchestrator — must
+            stabilize first. Agents amplify whatever foundation they
+            sit on, so the foundation has to be solid before the
+            amplifier gets switched on.
+          </li>
+          <li>
+            Real usage data is the most valuable input for designing
+            useful agents: which decisions repeat, where users spend
+            time, which patterns are good candidates for automation.
+            That data only exists once the system is in production.
+          </li>
+          <li>
+            The decision log accumulates a record of every orchestrator
+            invocation. After several months of operation it becomes
+            both an evaluation set for prospective agents and
+            (selectively) training material.
+          </li>
+          <li>
+            The AI landscape moves quickly. Committing to specific
+            models, providers, or design patterns now would lock in
+            choices that may look poor twelve months from now.
+          </li>
+        </ul>
+        <p style={{ color: "var(--fg)" }}><strong>Trigger to start the AI phase</strong></p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
+          <li>The Leaseweb mirror DB is in production and reliably synced.</li>
+          <li>At least two portals are live in real workflows.</li>
+          <li>The decision log has ~3 months of accumulated usage data.</li>
+        </ul>
+        <p style={{ color: "var(--fg)" }}>
+          <strong>Foundation decisions already made with the AI phase in mind</strong>
+        </p>
+        <p style={{ color: "var(--fg)" }}>
+          Several architectural commitments in this doc serve both
+          today's needs <em>and</em> the future AI layer. They are not
+          optional precisely because retrofitting them later is
+          expensive:
+        </p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
+          <li>
+            <strong>Row-level security (RLS)</strong> for tenant
+            isolation — applies to agent retrieval just as it applies
+            to portal reads.
+          </li>
+          <li>
+            <strong>Lineage columns</strong> on every mirror row
+            (<code>_zoho_id</code>, <code>_zoho_modified_at</code>,{" "}
+            <code>_mirror_synced_at</code>, <code>_source</code>,{" "}
+            <code>_payload_version</code>) — agents need provenance to
+            reason about freshness and trust.
+          </li>
+          <li>
+            <strong>Typed <code>DecisionInput</code> / <code>DecisionOutput</code> contract</strong>{" "}
+            — the future agent-proposal shape reuses this contract.
+            Agents propose; the orchestrator commits after the same
+            gates as any other writer. No direct agent writes.
+          </li>
+          <li>
+            <strong>Decision log table</strong> — agent invocations will
+            link to it via their own audit stream.
+          </li>
+          <li>
+            <strong>GDPR / PII column tagging</strong> — strictly
+            required before any agent retrieves data over the mirror.
+          </li>
+          <li>
+            <strong>Idempotency requirement on writes</strong> — agents
+            may retry, and writes must remain safe to repeat.
+          </li>
+        </ul>
+        <p style={{ color: "var(--fg)" }}><strong>What is intentionally deferred</strong></p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
+          <li>Vector store technology choice (pgvector, dedicated vector DB, …).</li>
+          <li>Embedding pipeline (which events trigger embeds, batching, model versioning).</li>
+          <li>Agent contract format and per-role tool catalogs.</li>
+          <li>LLM provider strategy (vendor vs. self-hosted, EU residency requirements).</li>
+          <li>Prompt-injection mitigations and output-validation patterns.</li>
+          <li>Cost and latency budgets per agent invocation.</li>
+        </ul>
+        <p style={{ color: "var(--fg)" }}><strong>Existing AI assets</strong></p>
+        <p style={{ color: "var(--fg)" }}>
+          A document store in S3 already exists, with embeddings
+          generated over its contents. This investment continues to
+          operate as-is — no further build is planned until the AI
+          phase begins and the integration pattern is designed against
+          the then-current architecture.
+        </p>
+        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
+          Changes to this section are themselves the signal that the
+          AI phase is starting. Until then, treat it as a deferred-work
+          marker, not a design.
+        </p>
+      </div>
+
       <h2 id="open-operational-items">Open operational items</h2>
       <div className="card">
         <p style={{ color: "var(--fg)" }}>

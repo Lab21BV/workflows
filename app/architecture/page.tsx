@@ -379,6 +379,7 @@ export default function ArchitecturePage() {
           <li><a href="/architecture/details#data-classification-and-gdpr">Data classification &amp; GDPR</a></li>
           <li><a href="/architecture/details#trade-offs-we-accepted">Trade-offs we accepted</a></li>
           <li><a href="/architecture/details#future-end-state-leaseweb-as-ssot-zoho-as-king-throughput">Future end state: Leaseweb as SSOT, Zoho as King throughput</a></li>
+          <li><a href="/architecture/details#ai-agents-planned-deferred">AI agents — planned, deferred</a></li>
           <li><a href="/architecture/details#open-operational-items">Open operational items</a></li>
           <li><a href="/architecture/details#where-new-design-docs-go">Where new design docs go</a></li>
         </ul>
