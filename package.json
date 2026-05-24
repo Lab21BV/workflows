@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "zoho:probe": "tsx src/scripts/probe.ts",
     "zoho:sync": "tsx src/scripts/sync-metadata.ts",
-    "zoho:create-vi-fields": "tsx src/scripts/create-vi-fields.ts"
+    "zoho:create-vi-fields": "tsx src/scripts/create-vi-fields.ts",
+    "zoho:create-vi-workflow-rule": "tsx src/scripts/create-vi-workflow-rule.ts"
   },
   "engines": {
     "node": ">=20"
