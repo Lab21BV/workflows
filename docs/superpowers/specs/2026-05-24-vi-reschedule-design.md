@@ -116,9 +116,12 @@ type VoorinspectieRecord = {
   Datum_tijd: string | null;                      // existing field — the committed VI datetime
 };
 
+type Department = "accountmanager" | "inkoop_planning";
+
 type Outcome =
   | { kind: "set_status"; status: VoorstelStatus; reason?: string }
-  | { kind: "notify"; who: Aanvrager | "klant" | "aannemer"; template: string }
+  | { kind: "notify_portal_user"; who: Aanvrager | "klant" | "aannemer"; template: string }
+  | { kind: "create_todo"; department: Department; title: string; body: string }
   | { kind: "update_leverdatum"; nieuweDatum: string; direction: "later" | "eerder" }
   | { kind: "commit_vi_datetime"; datetime: string }   // writes to Datum_tijd
   | { kind: "log_tijdlijn"; event: string };
@@ -138,11 +141,11 @@ export function evaluateReschedule(
     const gap = daysBetween(vi.VI_Voorgestelde_Datum!, vi.Leverdatum_Origineel);
     if (gap >= buffer) {
       out.push({ kind: "set_status", status: "awaiting_tegenpartij" });
-      out.push({ kind: "notify", who: tegenpartij(vi.VI_Voorgesteld_Door!), template: "vi_voorstel_review" });
+      out.push({ kind: "notify_portal_user", who: tegenpartij(vi.VI_Voorgesteld_Door!), template: "vi_voorstel_review" });
       out.push({ kind: "log_tijdlijn", event: "VI-voorstel geaccepteerd voor review (buffer ok)" });
     } else {
       out.push({ kind: "set_status", status: "aanvrager_moet_kiezen", reason: `Buffer ${buffer} dagen niet gehaald (${gap} dagen)` });
-      out.push({ kind: "notify", who: vi.VI_Voorgesteld_Door!, template: "vi_buffer_te_krap" });
+      out.push({ kind: "notify_portal_user", who: vi.VI_Voorgesteld_Door!, template: "vi_buffer_te_krap" });
     }
     return out;
   }
@@ -153,7 +156,7 @@ export function evaluateReschedule(
       out.push({ kind: "set_status", status: "none", reason: "Nieuwe ronde — aanvrager kiest andere VI-datum" });
     } else {
       out.push({ kind: "set_status", status: "awaiting_klant_leverdatum" });
-      out.push({ kind: "notify", who: "klant", template: "vraag_nieuwe_leverdatum_met_toelichting" });
+      out.push({ kind: "notify_portal_user", who: "klant", template: "vraag_nieuwe_leverdatum_met_toelichting" });
     }
     return out;
   }
@@ -162,16 +165,22 @@ export function evaluateReschedule(
   if (vi.VI_Voorstel_Status === "awaiting_tegenpartij" && vi.VI_Tegenpartij_Reactie) {
     if (vi.VI_Tegenpartij_Reactie === "accepted") {
       if (!vi.VI_Geaccepteerd_Tijdslot_Van) {
-        // Defensive — portal forgot to write the chosen tijdslot.
         out.push({ kind: "set_status", status: "rejected", reason: "Acceptatie zonder gekozen tijdslot — portal-bug" });
         return out;
       }
       out.push({ kind: "commit_vi_datetime", datetime: vi.VI_Geaccepteerd_Tijdslot_Van });
       out.push({ kind: "set_status", status: "done" });
       out.push({ kind: "log_tijdlijn", event: `VI-datum ${vi.VI_Geaccepteerd_Tijdslot_Van} bevestigd door beide partijen` });
+      // Inkoop & Planning need to react to the new VI moment (logistics, levering).
+      out.push({
+        kind: "create_todo",
+        department: "inkoop_planning",
+        title: `VI-datum gewijzigd voor ${vi.id}`,
+        body: `Nieuwe VI-datum: ${vi.VI_Geaccepteerd_Tijdslot_Van}. Controleer of inkoop/levering aansluit.`,
+      });
     } else {
       out.push({ kind: "set_status", status: "none", reason: "Tegenpartij weigerde; ronde opnieuw" });
-      out.push({ kind: "notify", who: vi.VI_Voorgesteld_Door!, template: "vi_tegenpartij_weigert" });
+      out.push({ kind: "notify_portal_user", who: vi.VI_Voorgesteld_Door!, template: "vi_tegenpartij_weigert" });
     }
     return out;
   }
@@ -188,19 +197,27 @@ export function evaluateReschedule(
     const gap = daysBetween(vi.VI_Voorgestelde_Datum!, vi.VI_Nieuwe_Leverdatum_Voorstel);
 
     if (gap >= buffer) {
-      // Buffer is now satisfied. Route to tegenpartij acceptance (klant is
-      // tegenpartij when aanvrager=aannemer; aannemer is tegenpartij when
-      // aanvrager=klant). The portal collapses this into the same screen
-      // where the klant just submitted leverdatum, so it feels like one step.
       out.push({ kind: "set_status", status: "awaiting_tegenpartij" });
-      out.push({ kind: "notify", who: tegenpartij(vi.VI_Voorgesteld_Door!), template: "vi_voorstel_review_na_leverdatum" });
+      out.push({ kind: "notify_portal_user", who: tegenpartij(vi.VI_Voorgesteld_Door!), template: "vi_voorstel_review_na_leverdatum" });
       out.push({ kind: "log_tijdlijn", event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer nu ok → tegenpartij beslist` });
     } else {
-      // Klant's leverdatum still doesn't give enough headroom — fresh round.
       out.push({ kind: "set_status", status: "none", reason: `Nieuwe leverdatum onvoldoende (gap ${gap}, vereist ${buffer}); nieuwe ronde` });
-      out.push({ kind: "notify", who: vi.VI_Voorgesteld_Door!, template: "vi_leverdatum_onvoldoende" });
+      out.push({ kind: "notify_portal_user", who: vi.VI_Voorgesteld_Door!, template: "vi_leverdatum_onvoldoende" });
       out.push({ kind: "log_tijdlijn", event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer ${buffer} > gap ${gap} → nieuwe ronde` });
     }
+    // Leverdatum changed regardless of branch — internal departments react.
+    out.push({
+      kind: "create_todo",
+      department: "inkoop_planning",
+      title: `Leverdatum gewijzigd (${direction}) voor ${vi.id}`,
+      body: `Nieuwe leverdatum: ${vi.VI_Nieuwe_Leverdatum_Voorstel} (oorspronkelijk ${vi.Leverdatum_Origineel}). Controleer inkoop en levering.`,
+    });
+    out.push({
+      kind: "create_todo",
+      department: "accountmanager",
+      title: `Klant heeft leverdatum aangepast voor ${vi.id}`,
+      body: `Nieuwe leverdatum (${direction}): ${vi.VI_Nieuwe_Leverdatum_Voorstel}. Toelichting klant: ${vi.VI_Toelichting_Klant ?? "—"}.`,
+    });
     return out;
   }
 
@@ -212,6 +229,40 @@ function tegenpartij(a: Aanvrager): Aanvrager {
 }
 ```
 
+## 6a. Department todo system
+
+Notifications to internal staff are **todo items**, not emails. Two departments consume them:
+
+| Department | Role | What they react to |
+|---|---|---|
+| `accountmanager` | Owns the customer relationship and order | Klant-initiated changes, escalations, anything customer-facing |
+| `inkoop_planning` | Owns purchasing & delivery scheduling | Leverdatum changes, VI date changes, anything that shifts logistics |
+
+The todo system is implemented as **Zoho `Tasks` module records** with one added custom field:
+
+| Field | Type | Values |
+|---|---|---|
+| `Department` | Picklist | `accountmanager`, `inkoop_planning` |
+
+When the evaluator emits `{ kind: "create_todo", department, title, body }`, the orchestrator creates a `Tasks` record:
+
+- `Subject` = `title`
+- `Description` = `body`
+- `Status` = `Not Started`
+- `Department` = department
+- `Related Voorinspectie` = the originating VI record (lookup)
+- `Due Date` = today + 1 day (configurable later)
+- `Owner` = unassigned (the department list view picks it up)
+
+Two new pages in this app:
+
+- `/todo/accountmanager` — lists open Tasks where `Department = accountmanager AND Status != Completed`, sorted by `Created_Time DESC`
+- `/todo/inkoop-planning` — same for `inkoop_planning`
+
+Each row: title, body, link to the related Voorinspectie (via `/tijdlijn/[id]`), and a "Mark resolved" button that PATCHes `Status = Completed` on the Zoho Tasks record. No own database — Zoho Tasks is the store.
+
+External-facing notifications (to klant or aannemer) keep the existing `notify_portal_user` outcome — they appear in the respective portals via Zoho field polling, as the architecture page describes. They are NOT todos.
+
 ## 7. Repository abstraction
 
 All Zoho calls live in `src/repo/*`. The decision tree and orchestrator import from `src/repo/*`, never from `src/zoho/*`. This is the "thin wall" that makes a future Postgres swap a per-file change.
@@ -221,6 +272,7 @@ src/repo/voorinspecties.ts   — getVoorinspectie, update, applyOutcomes
 src/repo/sales-orders.ts     — get, updateLeverdatum
 src/repo/products.ts         — getMany
 src/repo/tijdlijn.ts         — logEvent
+src/repo/tasks.ts            — createTodo, listOpen(department), markResolved
 ```
 
 Each file is small (~30 lines) and wraps the existing `ZohoClient`.
@@ -320,13 +372,15 @@ src/workflows/vi-reschedule/
 | Step | Description | Risk | Verification |
 |---|---|---|---|
 | 1 | Build `evaluate.ts` + unit tests | None — pure code | `npm test` passes |
-| 2 | Add new Zoho fields to Voorinspecties module | Low — additive | Fields visible in Zoho UI |
+| 2 | Add new Zoho fields to Voorinspecties module + `Department` custom field to Tasks module | Low — additive | Fields visible in Zoho UI |
 | 3 | Add `src/repo/*` wrappers (read-only first) | None — internal abstraction | Probe script returns expected shape |
 | 4 | Build `run.ts`; register `vi-reschedule` in `registry.ts` | None until wired | Manual curl against `localhost:3000` |
-| 5 | Configure Zoho workflow rule + webhook | Medium — live traffic | Edit a test Voorinspectie, watch Vercel logs |
-| 6 | Add `/api/cron/vi-reschedule-stuck` reconciliation | Low | Manual trigger; confirm expected stuck records |
+| 5 | Build `/todo/accountmanager` + `/todo/inkoop-planning` pages | Low — read-only UI | Visit pages locally; render mock Tasks |
+| 6 | Configure Zoho workflow rule + webhook | Medium — live traffic | Edit a test Voorinspectie, watch Vercel logs |
+| 7 | Add `/api/cron/vi-reschedule-stuck` reconciliation | Low | Manual trigger; confirm expected stuck records |
+| 8 | Disable existing parallel Zoho-native rules: `LAB21-T177`, `LAB21-T180`, `LAB21-T182`, `LAB21-T183` | Medium — behavior change for production records | Confirm new chain handles real reschedules before disabling; keep audit of disable dates |
 
-Each step is independently shippable. If step 5 fails, steps 1–4 stay in production harmlessly (no webhook = no fires = no effect).
+Each step is independently shippable. If step 6 fails, steps 1–5 stay in production harmlessly (no webhook = no fires = no effect). Step 8 is the cutover point — only proceed once the new chain proves stable on real production traffic.
 
 ## 15. Open questions
 
@@ -336,16 +390,14 @@ These must be answered before implementation begins.
 
 1a. ~~**Tijdblok selection at acceptance.**~~ ✅ Resolved 2026-05-24. Tegenpartij picks one specific tijdblok at acceptance (fields `VI_Geaccepteerd_Tijdslot_Van/Tot`). The chosen Van datetime is committed to `Datum_tijd`.
 
-2. **Notification delivery channels** — email (current LAB21 default), Cliq, both? Templates are abstract in the design; the notification system decides delivery. Likely a follow-up spec; for this design we only need the channel list to pick template names.
+2. ~~**Notification delivery channels.**~~ ✅ Resolved 2026-05-24. Internal notifications are **todo items** rendered in this app, not email/Cliq. Two departments: `accountmanager` and `inkoop_planning`. Implementation via Zoho `Tasks` module + a new `Department` custom field. New pages `/todo/accountmanager` and `/todo/inkoop-planning` render department-scoped open tasks. See §6a.
 
-3. **Manual admin override** — if an internal user manually sets `VI_Voorstel_Status=done` from Zoho UI, the orchestrator currently treats it as a no-op (no outcomes). Confirm this is the desired behavior, or whether the orchestrator should react (e.g., commit the VI datum).
+3. ~~**Manual admin override.**~~ ✅ Resolved 2026-05-24. If an internal user manually sets `VI_Voorstel_Status=done` (or any other terminal status) from Zoho UI, the orchestrator treats it as a no-op. The admin's intent is authoritative.
 
-4. ~~**Branch B leverdatum buffer re-evaluation.**~~ ✅ Resolved 2026-05-24. Re-evaluate buffer against the *proposed* VI date and the *new* leverdatum. If buffer satisfied → route to `awaiting_tegenpartij` (the klant's leverdatum submission collapses into the same portal screen as their acceptance, so this feels like one step UX-wise). If buffer still broken → kick a fresh round.
+4. ~~**Branch B leverdatum buffer re-evaluation.**~~ ✅ Resolved 2026-05-24. Re-evaluate buffer against the *proposed* VI date and the *new* leverdatum. If buffer satisfied → route to `awaiting_tegenpartij`. If buffer still broken → kick a fresh round.
 
-   **Follow-up sub-question:** when aanvrager = aannemer, the tegenpartij is the klant — who *just* submitted the new leverdatum. Should the portal:
-   - **A** — show the acceptance UI immediately after leverdatum submission (single-screen flow), or
-   - **B** — send a separate notification and let the klant come back to accept?
+   **Follow-up sub-question (NOT YET CONFIRMED) — design defaults to A:** when aanvrager = aannemer, the tegenpartij is the klant who *just* submitted the new leverdatum. The portal should:
+   - **A** — show the acceptance UI immediately after leverdatum submission (single-screen flow). *(current default)*
+   - **B** — send a separate notification and let the klant come back to accept.
 
-   The current design assumes A and routes to `awaiting_tegenpartij` always. Confirm.
-
-5. **Existing parallel Zoho-native workflows.** From the inventory, several rules already touch this area (`LAB21-T177 - Datum voorinspectie updaten na acceptatie`, `LAB21-T180`, `LAB21-T182`, `LAB21-T183`). Decide per-rule whether to keep, disable, or replace as part of rollout step 5. Most likely they get disabled once this chain proves stable.
+5. ~~**Existing parallel Zoho-native workflows.**~~ ✅ Resolved 2026-05-24. Disable: `LAB21-T177 - Datum voorinspectie updaten na acceptatie`, `LAB21-T180 - Klant informeren over keuze voorinspectie datum/tijd`, `LAB21-T182 - Actie accountmanager als klant niet reageert`, `LAB21-T183 - Herinnering acceptatie voorgestelde dagen na 24 uur`. Cutover happens in rollout step 8, only after the new chain runs stably on real traffic. Keep an audit log of disable dates so we can re-enable if needed.
