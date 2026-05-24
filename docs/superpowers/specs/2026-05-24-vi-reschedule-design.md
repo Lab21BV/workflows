@@ -12,7 +12,7 @@
 
 Build the "voorinspectie reschedule" decision chain inside the **LAB21 Operations** app. The chain triggers when an aannemer or klant proposes a new VI date/time blocks via a portal. It validates the proposal against a buffer rule, branches into either "tegenpartij accepts" or "klant chooses a new leverdatum," and applies all downstream effects (status updates, cascading changes to Sales_Orders, tijdlijn logging, notifications).
 
-The chain replaces the Zoho-native workflow rules that cannot fire each other — instead, all chaining lives in code in this repo (`workflows-two`). Zoho remains the source of truth for record state.
+The chain replaces the Zoho-native workflow rules that cannot fire each other — instead, all chaining lives in code in this repo ([`Lab21BV/workflows`](https://github.com/Lab21BV/workflows)). Zoho remains the source of truth for record state.
 
 ## 2. Background and motivation
 

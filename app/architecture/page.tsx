@@ -16,31 +16,58 @@ export default function ArchitecturePage() {
       </p>
       <p style={{ color: "var(--muted)", fontSize: 12 }}>
         Last reviewed: 2026-05-24 · Owner: Victor (XCX International) ·
-        Decision status: <strong style={{ color: "var(--ok)" }}>locked in</strong>
+        Decision status:{" "}
+        <strong>evolving</strong> — Leaseweb mirror DB to be built; some
+        operational details (sync failure handling, deployment topology,
+        observability) are still open. Locks back in once the mirror is
+        in production.
       </p>
+
+      <h2>The system in one paragraph</h2>
+      <div className="card">
+        <p style={{ color: "var(--fg)", margin: 0 }}>
+          Three layers. <strong>State</strong>: Zoho CRM today, Leaseweb
+          Postgres tomorrow. <strong>Orchestration</strong>: LAB21
+          Operations (this repo) as the cross-app decision brain.{" "}
+          <strong>Presentation</strong>: three portals (klant, aannemer,
+          aannemer-management) plus the configurators, each owning its
+          subdomain rules. The Mirror-Sync Handler is the bridge from
+          state to a read-optimized projection used by the presentation
+          layer.
+        </p>
+      </div>
 
       <h2>TL;DR for AI agents</h2>
       <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
         <ol style={{ marginTop: 0, paddingLeft: 20 }}>
           <li>
             <strong>Zoho CRM is the single source of truth (SSOT).</strong>{" "}
-            Every app writes to Zoho. Every app listens to Zoho webhooks.
+            Every app writes to Zoho. Zoho webhooks fan out to three
+            destinations: <strong>LAB21 Operations</strong> (decision
+            brain), the <em>mirror-sync handler</em> (which keeps the
+            Leaseweb mirror in sync), and the{" "}
+            <strong>configurators</strong> (for catalog updates).
+            Portals <strong>read from the mirror</strong>, not from Zoho
+            directly.
           </li>
           <li>
             <strong>Each app owns its own subdomain logic. LAB21 Operations
             owns the cross-app orchestration logic.</strong>{" "}
-            Klantenportal, Aannemersportal, and the configurators each
-            contain real business rules for their own subdomain (what a
-            klant can choose, how an aannemer schedules a VI, how a
-            configurator prices a product). LAB21 Operations owns the rules
-            that span apps and would otherwise drift across them — buffer
-            rules, leverdatum cascades, status orchestration, multi-party
+            Klantenportal, Aannemersportal, the Aannemer Management Portal,
+            and the configurators each contain real business rules for
+            their own subdomain (what a klant can choose, how an aannemer
+            schedules a VI, how staff manage aannemers, how a configurator
+            prices a product). LAB21 Operations owns the rules that span
+            apps and would otherwise drift across them — buffer rules,
+            leverdatum cascades, status orchestration, multi-party
             workflows.
           </li>
           <li>
             <strong>Every app keeps Zoho access inside one thin file</strong>{" "}
-            (<code>src/repo/zoho.ts</code> or equivalent). Future swap of Zoho
-            for Postgres edits only that file per app.
+            (<code>src/repo/zoho.ts</code> or equivalent). The end-state
+            swap turns this into <code>src/repo/db.ts</code> against
+            Leaseweb Postgres — Zoho stays only as the throughput layer
+            into King.
           </li>
           <li>
             <strong>Workflow chaining is solved by stateless re-evaluation.</strong>{" "}
@@ -49,10 +76,58 @@ export default function ArchitecturePage() {
             persistent state in the orchestrator.
           </li>
           <li>
-            <strong>Portals stay in sync with Zoho via webhooks + polling.</strong>{" "}
-            3–5 second polling is good enough for human-paced flows.
+            <strong>Portals read from a shared Leaseweb mirror DB that Zoho
+            webhooks keep in sync</strong>{" "}
+            (mirror is <em>to be built</em>). Browsers stay current by
+            polling the portal every 3–5 seconds (or SSE later) — fast
+            enough for human-paced flows without hammering Zoho's API.
+            Writes still go straight to Zoho.
           </li>
         </ol>
+      </div>
+
+      <h2>Glossary</h2>
+      <div className="card">
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <tbody>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>klant</strong></td>
+              <td style={td}>Customer (end-buyer).</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>aannemer</strong></td>
+              <td style={td}>Contractor / installer doing on-site work.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>voorinspectie (VI)</strong></td>
+              <td style={td}>Pre-installation site inspection performed by an aannemer.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>leverdatum</strong></td>
+              <td style={td}>Delivery date for an order.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>tijdblok</strong></td>
+              <td style={td}>Time slot used for VI scheduling.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>tijdlijn</strong></td>
+              <td style={td}>Per-record event timeline (audit log of decisions and field changes).</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>spiegeling</strong></td>
+              <td style={td}>Dutch for "mirror / reflection" — used here for the Leaseweb mirror DB.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>King</strong></td>
+              <td style={td}>ERP system that receives sales-relevant data via Zoho's existing integration.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={{ ...td, width: 180 }}><strong>SSOT</strong></td>
+              <td style={td}>Single source of truth. Currently Zoho; end state Leaseweb.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <h2>System diagram</h2>
@@ -67,30 +142,43 @@ export default function ArchitecturePage() {
             margin: 0,
           }}
         >{`
-                                            ┌──────────────────────────────┐
-                                            │          Zoho CRM            │
-                                            │           (SSOT)             │
-                                            └─┬──────┬──────────┬────────┬─┘
-                                              │      │          │        │
-        ┌─────────────────────────────────────┘      │          │        └──────────────────────────────┐
-        │ webhook         ┌──────────────────────────┘          │                                       │
-        │ "field changed" │ webhook                             │ webhook                       webhook │
-        ▼                 ▼                                     ▼                                       ▼
-┌──────────────┐  ┌─────────────────────┐            ┌──────────────────┐                  ┌─────────────────┐
-│ Klantenport. │  │ Aannemer Management │            │ Lab21 Operations │                  │ Aannemersportal │
-│              │  │       Portal        │            │ (decision brain) │                  │                 │
-└──────▲───────┘  └──────────▲──────────┘            └─────────┬────────┘                  └────────▲────────┘
-       │                     │                                 │                                    │
-       │ write intent        │ write intent                    │ write decision outcome             │ write intent
-       │                     │                                 │                                    │
-       └─────────────────────┴─────────────────────────────────┼────────────────────────────────────┘
-                                                               ▼
-                                                     (back to Zoho CRM at the top)
+                              ┌────────────────────────────────────┐
+                              │             Zoho CRM               │  ◄──── write intents + decision outcomes
+                              │              (SSOT)                │        (from all apps below)
+                              └────────┬──────────────────┬────────┘
+                                       │ webhook          │ webhook
+                                       │ "field changed"  │
+                                       ▼                  ▼
+                          ┌─────────────────────────┐  ┌──────────────────┐
+                          │   Mirror-Sync Handler   │  │ LAB21 Operations │ ─── write decision outcomes ──► Zoho CRM (top)
+                          │   (Zoho payload →       │  │ (decision brain) │
+                          │    mirror, idempotent)  │  └──────────────────┘
+                          └────────────┬────────────┘
+                                       │ writes (per-portal schema)
+                                       ▼
+                          ┌─────────────────────────┐
+                          │   Leaseweb Mirror DB    │  ◄──── reconciliation cron
+                          │   (1 cluster, schema    │        (LAB21 Operations)
+                          │    per portal: klant /  │
+                          │    aannemer /           │
+                          │    aannemermgmt)        │
+                          └────────────┬────────────┘
+                                       │ reads (own schema only)
+                  ┌────────────────────┼────────────────────┐
+                  ▼                    ▼                    ▼
+       ┌──────────────┐   ┌─────────────────────┐   ┌─────────────────┐   ┌──────────────┐
+       │ Klantenport. │   │ Aannemer Management │   │ Aannemersportal │   │ Configurators│ ◄── webhook on
+       │              │   │       Portal        │   │                 │   │              │     catalog updates
+       └──────┬───────┘   └──────────┬──────────┘   └────────┬────────┘   └──────┬───────┘     (from Zoho —
+              │                      │                       │                   │              not via mirror)
+              └─── write intents + decision outcomes ────────┴───── + orders/products ──► Zoho CRM (top)
 
- ┌────────────────┐
- │ Configurators  │ ────── write orders/products ──────► Zoho CRM
- │                │ ◄───── webhook on relevant change ──┘
- └────────────────┘
+ Notes:
+  • Mirror-Sync Handler and LAB21 Operations are both modules of Lab21BV/workflows
+    (same deployment unit, shown as separate boxes to reflect their distinct roles).
+  • Configurators sit at the same level as the portals but are event-recorders, not
+    intent-recorders: they commit user-built configurations as Sales_Orders, they don't
+    compute decisions. They read directly from Zoho (catalog-update webhook), not the mirror.
 `}</pre>
       </div>
 
@@ -108,7 +196,7 @@ export default function ArchitecturePage() {
           <tbody>
             <tr style={tr}>
               <td style={td}><strong>Klantenportal</strong></td>
-              <td style={td}>Klant intents (e.g. choose leverdatum)</td>
+              <td style={td}>Klant intents + subdomain decision outcomes (e.g. choose leverdatum, klant-side validations)</td>
               <td style={td}>Fields affecting klant's view</td>
               <td style={td}>
                 <a href="https://github.com/Lab21BV/klantenportal">
@@ -118,7 +206,7 @@ export default function ArchitecturePage() {
             </tr>
             <tr style={tr}>
               <td style={td}><strong>Aannemersportal</strong></td>
-              <td style={td}>Aannemer intents (e.g. propose VI date)</td>
+              <td style={td}>Aannemer intents + subdomain decision outcomes (e.g. propose VI date, aannemer scheduling rules)</td>
               <td style={td}>Fields affecting aannemer's view</td>
               <td style={td}>
                 <a href="https://github.com/Lab21BV/aannemers">
@@ -131,7 +219,7 @@ export default function ArchitecturePage() {
             </tr>
             <tr style={tr}>
               <td style={td}><strong>Aannemer Management Portal</strong></td>
-              <td style={td}>Aannemer-management intents (assignments, onboarding, status changes)</td>
+              <td style={td}>Aannemer-management intents + subdomain decision outcomes (assignments, onboarding, status changes)</td>
               <td style={td}>Fields affecting aannemer-management view</td>
               <td style={td}>
                 <a href="https://github.com/Lab21BV/aannemersmanagement">
@@ -141,8 +229,8 @@ export default function ArchitecturePage() {
             </tr>
             <tr style={tr}>
               <td style={td}><strong>Configurators</strong></td>
-              <td style={td}>New Sales_Orders + line items</td>
-              <td style={td}>(Optional) catalog updates</td>
+              <td style={td}>New Sales_Orders + line items <span style={{ color: "var(--muted)", fontSize: 11 }}>(event-style — they commit user-built configurations; they do not emit intents or decisions like the portals)</span></td>
+              <td style={td}>(Optional) catalog updates <span style={{ color: "var(--muted)", fontSize: 11 }}>— directly from Zoho, not via the mirror</span></td>
               <td style={td}>
                 <a href="https://github.com/Lab21BV/Gordijnen-configurator">
                   Lab21BV/Gordijnen-configurator
@@ -153,228 +241,152 @@ export default function ArchitecturePage() {
               <td style={td}><strong>LAB21 Operations</strong></td>
               <td style={td}>Decision outcomes (statuses, related records, notifications)</td>
               <td style={td}>Everything that triggers a decision</td>
-              <td style={td}>this repo (<code>workflows-two</code>)</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/workflows">
+                  Lab21BV/workflows
+                </a>{" "}
+                <span style={{ color: "var(--muted)", fontSize: 11 }}>
+                  (this repo)
+                </span>
+              </td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Mirror-Sync Handler</strong></td>
+              <td style={td}>— (read-side only; writes to Leaseweb, not Zoho)</td>
+              <td style={td}>All field-change webhooks → per-portal schemas in the Leaseweb mirror (idempotent, ordered, retried)</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/workflows">
+                  Lab21BV/workflows
+                </a>{" "}
+                <span style={{ color: "var(--muted)", fontSize: 11 }}>
+                  (module of this repo)
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h2>The two non-negotiable refinements</h2>
-      <div className="grid">
-        <div className="card">
-          <strong style={{ color: "var(--accent)" }}>
-            1. Thin Zoho wall in every app
-          </strong>
-          <p style={{ color: "var(--fg)", marginTop: 8 }}>
-            All Zoho calls live in one file per app, e.g.{" "}
-            <code>src/repo/zoho.ts</code>. Nothing else imports{" "}
-            <code>ZohoClient</code> directly.
-          </p>
-          <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-            Why: future Zoho-to-Postgres swap edits one file per app instead
-            of the whole codebase.
-          </p>
-        </div>
-        <div className="card">
-          <strong style={{ color: "var(--accent) " }}>
-            2. Cross-app rules in ONE place
-          </strong>
-          <p style={{ color: "var(--fg)", marginTop: 8 }}>
-            Cross-app decision logic — buffer rules, leverdatum cascades,
-            multi-party status orchestration, validations that span more
-            than one app — lives only in LAB21 Operations. Each portal and
-            configurator still owns the business rules for its own
-            subdomain.
-          </p>
-          <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-            Why: rules that touch multiple apps must live in one place to
-            avoid drift. Rules that only touch one subdomain belong in that
-            app, where the team owning it can iterate without touching the
-            orchestrator.
-          </p>
-        </div>
-      </div>
-
-      <h2>Workflow chaining: how it works</h2>
+      <h2>Canonical entities</h2>
       <div className="card">
         <p style={{ color: "var(--fg)" }}>
-          Zoho doesn't refire workflow rules on field updates made by other
-          workflow rules. So we move chaining out of Zoho entirely:
+          The core business entities, their Zoho module name (where
+          known), kind, and key fields seen in the codebase. This is a
+          first sketch — a full data dictionary (every field, type,
+          nullability, FK, retention class) belongs alongside the
+          mirror schema work and is still TBD.
         </p>
-        <ol style={{ color: "var(--fg)", paddingLeft: 20 }}>
-          <li>An app writes a field change to Zoho (intent).</li>
-          <li>Zoho fires a webhook to LAB21 Operations.</li>
-          <li>
-            LAB21 Operations reads the full current state from Zoho (record +
-            related records + lookups).
-          </li>
-          <li>
-            It walks the decision tree as a pure function and produces a list
-            of next actions.
-          </li>
-          <li>It writes those outcomes back to Zoho.</li>
-          <li>
-            Each write triggers more webhooks — to other portals (UI updates)
-            and back to LAB21 Operations if more chaining is needed.
-          </li>
-        </ol>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--border)" }}>
+              <th style={th}>Entity</th>
+              <th style={th}>Kind</th>
+              <th style={th}>Zoho module</th>
+              <th style={th}>Key fields / notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style={tr}>
+              <td style={td}><strong>Klant</strong></td>
+              <td style={td}>Master (PII)</td>
+              <td style={td}>Zoho Contacts / Accounts <span style={{ color: "var(--muted)", fontSize: 11 }}>(to confirm exact module)</span></td>
+              <td style={td}>Owned by klantenportal flows; read by aannemer + management</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Aannemer</strong></td>
+              <td style={td}>Master (PII)</td>
+              <td style={td}>Zoho (custom module — name TBD)</td>
+              <td style={td}>Owned by Aannemer Management Portal; read by aannemersportal</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Product</strong></td>
+              <td style={td}>Master (reference)</td>
+              <td style={td}><code>Products</code></td>
+              <td style={td}><code>Levertijd</code> (delivery time in days) drives leverdatum cascades</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Sales_Order</strong></td>
+              <td style={td}>Transactional</td>
+              <td style={td}><code>Sales_Orders</code></td>
+              <td style={td}><code>Leverdatum</code>, <code>Product_Details[]</code> (lines). Written by configurators; King-relevant.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Voorinspectie</strong></td>
+              <td style={td}>Transactional</td>
+              <td style={td}><code>Voorinspecties</code></td>
+              <td style={td}>Central to VI-reschedule. Fields incl. <code>Leverdatum_Origineel</code>, <code>Datum_tijd</code>, <code>VI_Voorstel_Status</code>, <code>VI_Branch_Gekozen</code>, <code>VI_Buffer_Snapshot_Dagen</code>.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Task</strong></td>
+              <td style={td}>Transactional</td>
+              <td style={td}><code>Tasks</code></td>
+              <td style={td}>Department-scoped todos (<code>Department</code> = accountmanager | inkoop_planning). <code>What_Id</code> ties back to a Voorinspectie.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Tijdlijn entry</strong></td>
+              <td style={td}>Audit (append-only)</td>
+              <td style={td}><code>Datums_2</code> today; target: mirror table</td>
+              <td style={td}>Per-record event timeline. Fields: <code>Name</code>, <code>Fase</code>, <code>Code</code>, <code>Omschrijving</code>, <code>Voorinspectie</code> (FK), <code>Status_acceptatie</code>.</td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Decision-log entry</strong></td>
+              <td style={td}>Audit (append-only)</td>
+              <td style={td}>Mirror only — does not exist yet</td>
+              <td style={td}>One row per orchestrator invocation: trigger, input hash, contract+decision version, output, duration. See details page.</td>
+            </tr>
+          </tbody>
+        </table>
         <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-          No persistent state in LAB21 Operations. "Where we are in the flow"
-          is encoded in Zoho field values (e.g.{" "}
-          <code>VI_Voorstel_Status = awaiting_klant_leverdatum</code>).
+          Known relationships from the codebase (cardinalities are best
+          guesses, confirm before encoding in the mirror schema):
         </p>
-      </div>
-
-      <h2>
-        Portal read store: Leaseweb mirror DB{" "}
-        <span
-          style={{
-            fontSize: 11,
-            color: "var(--muted)",
-            fontWeight: 400,
-            letterSpacing: 0.05,
-            textTransform: "uppercase",
-          }}
-        >
-          (to be built)
-        </span>
-      </h2>
-      <div className="card">
-        <p style={{ color: "var(--fg)" }}>
-          For Zoho webhooks to actually work for the portals, each portal
-          needs a local read store it can serve pages from. Hitting Zoho
-          on every page load is not viable — API rate limits, latency, and
-          query expressiveness all push against it. The answer is a second
-          database hosted in Leaseweb that mirrors the relevant Zoho data
-          (a <em>spiegeling</em> of Zoho).
-        </p>
-        <p style={{ color: "var(--fg)" }}>How it flows:</p>
-        <ol style={{ color: "var(--fg)", paddingLeft: 20 }}>
-          <li>
-            Zoho fires a webhook on a field change (the same webhook that
-            already feeds LAB21 Operations).
-          </li>
-          <li>
-            The webhook also updates the Leaseweb mirror DB so it stays in
-            sync with Zoho field-by-field.
-          </li>
-          <li>
-            Portals read from the Leaseweb mirror (fast, no Zoho rate
-            limits) and write intents back to Zoho via their thin{" "}
-            <code>src/repo/zoho.ts</code> wall.
-          </li>
-          <li>
-            Reconciliation crons in LAB21 Operations catch any missed
-            webhooks and re-sync the mirror from Zoho periodically.
-          </li>
-        </ol>
-        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-          Zoho remains the single source of truth. The Leaseweb mirror is
-          a read-optimized projection — never the authority. Portals never
-          write to it directly; all writes still go through Zoho, and the
-          mirror catches up via webhook + reconciliation.
-        </p>
-        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-          This is also the natural staging point for the future
-          Zoho-to-Postgres swap: once the mirror is the de-facto read
-          source and Zoho's role narrows to write-target, replacing Zoho
-          with the mirror itself becomes a much smaller step.
-        </p>
-      </div>
-
-      <h2>How portals push updates to the user's browser</h2>
-      <div className="card">
-        <p style={{ color: "var(--fg)" }}>
-          With the Leaseweb mirror DB carrying the read state, the question
-          "how does the user's browser learn about an update" cleanly
-          separates from "how does the mirror learn about an update." The
-          mirror catches up via Zoho webhook + reconciliation cron (see the
-          section above). What's left is the portal-to-browser hop. Three
-          options, simplest first:
-        </p>
-        <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
-          <li>
-            <strong>Polling (default).</strong> Browser asks the portal
-            "any change?" every 3–5 seconds; the portal answers by reading
-            from the Leaseweb mirror. Good enough for all current
-            human-paced flows.
-          </li>
-          <li>
-            <strong>Server-Sent Events (SSE), backed by Postgres
-            LISTEN/NOTIFY.</strong> When the webhook handler updates the
-            mirror, Postgres fires a <code>NOTIFY</code>; the portal's SSE
-            stream picks it up and pushes to open browser tabs in real
-            time. Cheap to add later because it runs on the same DB the
-            portal already reads from — no extra fan-out infrastructure.
-          </li>
-          <li>
-            <strong>WebSockets.</strong> Bi-directional. Overkill for these
-            read-mostly flows.
-          </li>
+        <ul style={{ color: "var(--muted)", fontSize: 12, paddingLeft: 20, marginTop: 4 }}>
+          <li>Klant → Sales_Order: 1:N</li>
+          <li>Sales_Order → Product: N:M (via <code>Product_Details</code> line items)</li>
+          <li>Sales_Order → Voorinspectie: 1:1 typical, 1:N possible</li>
+          <li>Voorinspectie → Aannemer: N:1</li>
+          <li>Voorinspectie → Tijdlijn entries (<code>Datums_2</code>): 1:N</li>
+          <li>Voorinspectie → Task: 1:N (via <code>What_Id</code>)</li>
         </ul>
+        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
+          <strong>Open items for the full data dictionary:</strong>{" "}
+          confirm the exact Zoho modules for Klant + Aannemer; enumerate
+          every replicated field per module with type and nullability;
+          mark PII columns explicitly; record the foreign-key direction
+          and on-delete behavior per relationship.
+        </p>
       </div>
 
-      <h2>Trade-offs we accepted</h2>
-      <div className="card">
-        <ul style={{ color: "var(--fg)", paddingLeft: 20, marginTop: 0 }}>
-          <li>
-            <strong>Webhook latency.</strong> Typically &lt;1s, sometimes a
-            few seconds during Zoho load spikes. Acceptable for human-paced
-            flows. If you ever need instant feedback, the affected portal
-            should call LAB21 Operations directly (HTTP) instead of routing
-            via Zoho.
-          </li>
-          <li>
-            <strong>Webhook reliability.</strong> Zoho webhooks are not
-            100%. Mitigation: cron-based reconciliation jobs in LAB21
-            Operations (we already use this pattern — see{" "}
-            <code>/api/cron/voorinspectie-no-response</code>).
-          </li>
-          <li>
-            <strong>Race conditions on shared fields.</strong> E.g., a
-            configurator updates <code>Products.Levertijd</code> while a VI
-            reschedule is mid-flight. Mitigation: when a chain depends on a
-            value, snapshot it into the originating record at the moment the
-            chain starts.
-          </li>
+      <h2>Read on for the details</h2>
+      <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
+        <p style={{ color: "var(--fg)", marginTop: 0 }}>
+          The page you're on covers the <strong>overview</strong>: the
+          three layers, the TL;DR, the glossary, the system diagram, and
+          the apps table. For the actual architectural decisions —
+          refinements, workflow chaining, mirror DB topology, eventual
+          consistency, trade-offs, end-state migration, and open
+          operational items — see{" "}
+          <a href="/architecture/details"><strong>Architecture details →</strong></a>
+        </p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20, marginBottom: 0 }}>
+          <li><a href="/architecture/details#the-two-non-negotiable-refinements">The two non-negotiable refinements</a></li>
+          <li><a href="/architecture/details#workflow-chaining-how-it-works">Workflow chaining: how it works</a> (incl. idempotency + read-from-Zoho constraint)</li>
+          <li><a href="/architecture/details#orchestrator-data-contract">Orchestrator data contract &amp; decision log</a></li>
+          <li><a href="/architecture/details#portal-read-store-leaseweb-mirror-db-to-be-built">Portal read store: Leaseweb mirror DB</a> (topology + sync handler + reference/transactional split)</li>
+          <li><a href="/architecture/details#how-portals-push-updates-to-the-users-browser">How portals push updates to the user's browser</a></li>
+          <li><a href="/architecture/details#audit-trail-tijdlijn-and-decision-log">Audit trail: tijdlijn &amp; decision log</a></li>
+          <li><a href="/architecture/details#eventual-consistency-read-your-writes">Eventual consistency: read-your-writes</a></li>
+          <li><a href="/architecture/details#data-classification-and-gdpr">Data classification &amp; GDPR</a></li>
+          <li><a href="/architecture/details#trade-offs-we-accepted">Trade-offs we accepted</a></li>
+          <li><a href="/architecture/details#future-end-state-leaseweb-as-ssot-zoho-as-king-throughput">Future end state: Leaseweb as SSOT, Zoho as King throughput</a></li>
+          <li><a href="/architecture/details#open-operational-items">Open operational items</a></li>
+          <li><a href="/architecture/details#where-new-design-docs-go">Where new design docs go</a></li>
         </ul>
-      </div>
-
-      <h2>Future: replacing Zoho with Postgres</h2>
-      <div className="card">
-        <p style={{ color: "var(--fg)" }}>
-          The architecture is designed to make this swap bounded:
-        </p>
-        <ol style={{ color: "var(--fg)", paddingLeft: 20 }}>
-          <li>Stand up Postgres alongside Zoho.</li>
-          <li>
-            Replace each app's <code>src/repo/zoho.ts</code> with{" "}
-            <code>src/repo/db.ts</code>. Same function signatures, different
-            backing store.
-          </li>
-          <li>
-            Replace Zoho webhooks with database triggers / NOTIFY / change
-            data capture into the same webhook endpoints.
-          </li>
-          <li>
-            Decision trees, API endpoints, UI code all stay unchanged.
-          </li>
-        </ol>
-      </div>
-
-      <h2>Where new design docs go</h2>
-      <div className="card">
-        <p style={{ color: "var(--fg)" }}>
-          Per-feature design docs (e.g., the VI-reschedule flow we're
-          designing now) live in{" "}
-          <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code>{" "}
-          in this repo. They reference this page for shared architectural
-          decisions instead of repeating them.
-        </p>
       </div>
     </>
   );
 }
+
 
 const th: React.CSSProperties = {
   textAlign: "left",
