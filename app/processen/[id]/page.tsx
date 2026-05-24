@@ -30,6 +30,46 @@ export default async function ProcesPage({
       </div>
       <p style={{ marginTop: 8 }}>{p.summary}</p>
 
+      <div className="card" style={{ borderLeft: "4px solid var(--accent)", marginTop: 12 }}>
+        <strong>📱 Draait op:</strong> deze portal (LAB21 Operations app) —{" "}
+        <em>niet</em> in Zoho CRM zelf. De beslislogica zit in code; Zoho fungeert
+        als data-bron (SSOT). Voor de native Zoho werkflowsregels zie{" "}
+        <a href="/processen/zoho-crm">/processen/zoho-crm</a>.
+      </div>
+
+      {p.supersedes && p.supersedes.length > 0 && (
+        <>
+          <h2>Vervangt deze Zoho-CRM werkflowsregels</h2>
+          <div className="card">
+            <p style={{ color: "var(--fg)", margin: "0 0 12px" }}>
+              Deze portal-flow heeft de volgende Zoho-native regels overgenomen.
+              Ze zijn uitgeschakeld bij cutover — terugzetten kan via Zoho Setup
+              → Automatisering → Werkflowsregels.
+            </p>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                  <th style={th}>Naam</th>
+                  <th style={th}>Zoho ID</th>
+                  <th style={th}>Uitgeschakeld</th>
+                </tr>
+              </thead>
+              <tbody>
+                {p.supersedes.map((s, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+                    <td style={td}>{s.name}</td>
+                    <td style={td}>
+                      {s.id ? <code style={{ fontSize: 11 }}>{s.id}</code> : "—"}
+                    </td>
+                    <td style={td}>{s.disabledOn ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
       <h2>Wanneer draait het?</h2>
       <div className="card">
         <p style={{ color: "var(--fg)", margin: 0 }}>{p.trigger}</p>

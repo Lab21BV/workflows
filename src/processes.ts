@@ -22,6 +22,8 @@ export type ProcessDef = {
   mermaid: string;
   /** Optional list of relevant Zoho field names this process reads/writes. */
   fields?: { module: string; name: string; purpose: string }[];
+  /** Zoho-CRM workflow rules this portal process replaces (cutover note). */
+  supersedes?: { name: string; id?: string; disabledOn?: string }[];
 };
 
 export const PROCESSES: Record<string, ProcessDef> = {
@@ -71,6 +73,12 @@ export const PROCESSES: Record<string, ProcessDef> = {
       { module: "Sales_Orders", name: "Ordered_Items", purpose: "Subform met line items → product-ids" },
       { module: "Products", name: "Levertijd_in_dagen", purpose: "Per product. Max wordt gebruikt voor buffer" },
       { module: "Tasks", name: "Department", purpose: "accountmanager of inkoop_planning — bepaalt todo-lijst" },
+    ],
+    supersedes: [
+      { name: "LAB21-T177 - Datum voorinspectie updaten na acceptatie", id: "728921000009873232", disabledOn: "2026-05-24" },
+      { name: "LAB21-T180 - Klant informeren over keuze voorinspectie datum/tijd", id: "728921000009873609", disabledOn: "2026-05-24" },
+      { name: "LAB21-T182 - Actie accountmanager als klant niet reageert", id: "728921000010083298", disabledOn: "2026-05-24" },
+      { name: "LAB21-T183 - Herinnering acceptatie voorgestelde dagen na 24 uur", id: "728921000010083459", disabledOn: "2026-05-24" },
     ],
   },
 

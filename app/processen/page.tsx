@@ -10,11 +10,33 @@ export default function ProcessenIndex() {
     <>
       <h1>Processen</h1>
       <p>
-        Alle automatiseringen die LAB21 Operations momenteel draait. Klik op een
-        proces om het stappenplan, de triggers en de Zoho-velden te bekijken.
+        Automatiseringen die LAB21 gebruikt — verdeeld in twee bronnen:
       </p>
 
-      <h2>Webhook-getriggerd ({webhooks.length})</h2>
+      <div className="grid">
+        <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
+          <strong>📱 Op deze portal — LAB21 Operations app</strong>
+          <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>
+            Beslislogica die in code draait (deze app). Stateless re-evaluatie
+            getriggerd door Zoho-webhooks of door dagelijkse crons. {list.length}{" "}
+            processen — zie hieronder.
+          </p>
+        </div>
+        <a
+          href="/processen/zoho-crm"
+          className="card"
+          style={{ borderLeft: "4px solid var(--warn)", textDecoration: "none", color: "var(--fg)" }}
+        >
+          <strong>🔄 In Zoho CRM — werkflowsregels</strong>
+          <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>
+            Native Zoho automation (workflow rules) die direct binnen Zoho draaien.
+            Aangemaakt via Zoho Setup → Automatisering → Werkflowsregels.{" "}
+            <strong style={{ color: "var(--fg)" }}>Klik om de live lijst te bekijken →</strong>
+          </p>
+        </a>
+      </div>
+
+      <h2>Portal-processen — Webhook-getriggerd ({webhooks.length})</h2>
       <div className="grid">
         {webhooks.map((p) => (
           <a
@@ -29,11 +51,16 @@ export default function ProcessenIndex() {
             </div>
             <strong>{p.title}</strong>
             <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>{p.summary}</p>
+            {p.supersedes && p.supersedes.length > 0 && (
+              <p style={{ color: "var(--muted)", margin: "8px 0 0", fontSize: 11 }}>
+                Vervangt {p.supersedes.length} oude Zoho-regel{p.supersedes.length === 1 ? "" : "s"}.
+              </p>
+            )}
           </a>
         ))}
       </div>
 
-      <h2>Cron-getriggerd ({crons.length})</h2>
+      <h2>Portal-processen — Cron-getriggerd ({crons.length})</h2>
       <div className="grid">
         {crons.map((p) => (
           <a
