@@ -16,7 +16,7 @@ type RawVI = Record<string, unknown> & {
   VI_Toelichting_Klant?: string;
   VI_Tegenpartij_Reactie?: string;
   VI_Geaccepteerd_Tijdslot_Van?: string;
-  Sales_Order?: { id: string };
+  Verkooporders?: { id: string };
 };
 
 export async function get(id: string, leverdatumOrigineel: string): Promise<VoorinspectieRecord | null> {
@@ -42,7 +42,7 @@ export async function get(id: string, leverdatumOrigineel: string): Promise<Voor
 
 export async function getSalesOrderId(id: string): Promise<string | null> {
   const r = await records.get<RawVI>("Voorinspecties", id);
-  return r?.Sales_Order?.id ?? null;
+  return r?.Verkooporders?.id ?? null;
 }
 
 export async function update(id: string, patch: Record<string, unknown>): Promise<void> {

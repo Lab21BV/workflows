@@ -37,7 +37,7 @@ async function main() {
     body: JSON.stringify({
       data: [{
         id: VI_ID,
-        Sales_Order: so.id,
+        Verkooporders: so.id,
         VI_Voorgestelde_Datum: viDate,
         VI_Voorgesteld_Door: "aannemer",
         VI_Voorstel_Status: "awaiting_evaluation",
@@ -66,7 +66,7 @@ async function main() {
     body: JSON.stringify({
       data: [{
         id: VI_ID,
-        Sales_Order: before.Sales_Order?.id ?? null,
+        Verkooporders: before.Verkooporders?.id ?? null,
         VI_Voorgestelde_Datum: before.VI_Voorgestelde_Datum ?? null,
         VI_Voorgesteld_Door: before.VI_Voorgesteld_Door ?? null,
         VI_Voorstel_Status: before.VI_Voorstel_Status ?? null,
@@ -80,50 +80,48 @@ async function main() {
 
 type SO = { id: string; Leverdatum: string; maxLT: number };
 
+// Known test record: "Victor test vloerorder" — created 2026-05-23
+// Has Ordered_Items + Verwachte_leverdatum populated.
+const TEST_SO_ID = "728921000040157161";
+
 async function findGoodSalesOrder(z: ZohoClient): Promise<SO | null> {
-  // Scan recent Sales_Orders. Leverdatum lives in Due_Date or
-  // Verwachte_leverdatum; line items in Ordered_Items subform.
-  const r = await z.request<{ data: any[] }>("/Sales_Orders", {
-    query: {
-      fields: "id,Due_Date,Verwachte_leverdatum,Ordered_Items",
-      per_page: 40,
-      sort_by: "Modified_Time",
-      sort_order: "desc",
-    },
+  const r = await z.request<{ data: any[] }>(`/Sales_Orders/${TEST_SO_ID}`, {
+    query: { fields: "id,Due_Date,Verwachte_leverdatum,Ordered_Items" },
   });
-  for (const so of r.data ?? []) {
-    const leverdatum = so.Due_Date ?? so.Verwachte_leverdatum;
-    if (!leverdatum) continue;
-    if (!Array.isArray(so.Ordered_Items) || so.Ordered_Items.length === 0) continue;
-    const productIds = so.Ordered_Items
-      .map((d: any) => d.Product_Name?.id ?? d.product?.id)
-      .filter(Boolean) as string[];
-    if (productIds.length === 0) continue;
-    const products = await Promise.all(
-      productIds.slice(0, 5).map((id) =>
-        z
-          .request<{ data: any[] }>(`/Products/${id}`, { query: { fields: "id,Levertijd_in_dagen" } })
-          .then((r) => r.data?.[0])
-          .catch(() => null),
-      ),
-    );
-    const lts = products.map((p) => p?.Levertijd_in_dagen ?? 0);
-    return { id: so.id, Leverdatum: leverdatum, maxLT: Math.max(...lts, 0) };
+  const so = r.data?.[0];
+  if (!so) return null;
+  const leverdatum = so.Due_Date ?? so.Verwachte_leverdatum;
+  if (!leverdatum) {
+    console.error(`Test SO ${TEST_SO_ID} has no leverdatum. Aborting.`);
+    return null;
   }
-  return null;
+  const items = Array.isArray(so.Ordered_Items) ? so.Ordered_Items : [];
+  const productIds = items
+    .map((d: any) => d.Product_Name?.id ?? d.product?.id)
+    .filter(Boolean) as string[];
+  const products = await Promise.all(
+    productIds.slice(0, 5).map((id) =>
+      z
+        .request<{ data: any[] }>(`/Products/${id}`, { query: { fields: "id,Levertijd_in_dagen" } })
+        .then((r) => r.data?.[0])
+        .catch(() => null),
+    ),
+  );
+  const lts = products.map((p) => p?.Levertijd_in_dagen ?? 0);
+  return { id: so.id, Leverdatum: leverdatum, maxLT: Math.max(...lts, 0) };
 }
 
 async function getVI(z: ZohoClient) {
   const r = await z.request<{ data: any[] }>(
     `/Voorinspecties/${VI_ID}`,
-    { query: { fields: "Sales_Order,VI_Voorgestelde_Datum,VI_Voorgesteld_Door,VI_Voorstel_Status,VI_Buffer_Snapshot_Dagen" } },
+    { query: { fields: "Verkooporders,VI_Voorgestelde_Datum,VI_Voorgesteld_Door,VI_Voorstel_Status,VI_Buffer_Snapshot_Dagen" } },
   );
   return r.data?.[0] ?? {};
 }
 
 function stateView(v: any) {
   return {
-    Sales_Order: v.Sales_Order?.id ?? null,
+    Verkooporders: v.Verkooporders?.id ?? null,
     VI_Voorstel_Status: v.VI_Voorstel_Status ?? null,
     VI_Voorgestelde_Datum: v.VI_Voorgestelde_Datum ?? null,
     VI_Voorgesteld_Door: v.VI_Voorgesteld_Door ?? null,
