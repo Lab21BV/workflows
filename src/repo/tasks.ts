@@ -36,11 +36,13 @@ export async function createTodo(input: {
 }
 
 export async function listOpen(department: Department): Promise<TaskRow[]> {
+  // Zoho's search endpoint returns 204 No Content when there are no matches.
+  // The shared ZohoClient converts that to `undefined`, so guard before reading `.data`.
   const res = await records.search<TaskRow>("Tasks", {
     criteria: `(Department:equals:${department})and(Status:not_equal:Completed)`,
     perPage: 100,
   });
-  return res.data;
+  return res?.data ?? [];
 }
 
 export async function markResolved(id: string): Promise<void> {
