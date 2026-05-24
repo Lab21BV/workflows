@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/voorinspectie-no-response",
       "schedule": "30 8 * * *"
+    },
+    {
+      "path": "/api/cron/vi-reschedule-stuck",
+      "schedule": "0 7 * * *"
     }
   ]
 }
