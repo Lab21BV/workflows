@@ -401,3 +401,15 @@ These must be answered before implementation begins.
    - **B** — send a separate notification and let the klant come back to accept.
 
 5. ~~**Existing parallel Zoho-native workflows.**~~ ✅ Resolved 2026-05-24. Disable: `LAB21-T177 - Datum voorinspectie updaten na acceptatie`, `LAB21-T180 - Klant informeren over keuze voorinspectie datum/tijd`, `LAB21-T182 - Actie accountmanager als klant niet reageert`, `LAB21-T183 - Herinnering acceptatie voorgestelde dagen na 24 uur`. Cutover happens in rollout step 8, only after the new chain runs stably on real traffic. Keep an audit log of disable dates so we can re-enable if needed.
+
+## 16. Cutover log
+
+| Date | Rule | Action |
+|---|---|---|
+| 2026-05-24 | LAB21-T177 - Datum voorinspectie updaten na acceptatie | Disabled (id 728921000009873232) |
+| 2026-05-24 | LAB21-T180 - Klant informeren over keuze voorinspectie datum/tijd | Disabled (id 728921000009873609) |
+| 2026-05-24 | LAB21-T182 - Actie accountmanager als klant niet reageert | Disabled (id 728921000010083298) |
+| 2026-05-24 | LAB21-T183 - Herinnering acceptatie voorgestelde dagen na 24 uur | Disabled (id 728921000010083459) |
+
+To re-enable: PUT `/settings/automation/workflow_rules/<id>` with body
+`{ workflow_rules: [{ status: { active: true, delete_schedule_action: false } }] }`.
