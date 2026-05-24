@@ -76,6 +76,15 @@ These are added once via Zoho Setup → Modules → Voorinspecties → Fields. A
 
 Audit history is NOT stored on the Voorinspectie record. Each state transition is logged as a `Datums_2` (tijdlijn) row, which keeps audit data normalized and viewable in the existing `/tijdlijn` UI.
 
+**The existing committed-VI field is `Datum_tijd`** (label: "Datum/tijd voorinspectie", type: datetime). This is what holds the actual scheduled VI moment. When a reschedule reaches `done` from the buffer-ok path (Stage 3, tegenpartij accepted), the orchestrator writes the agreed datetime to `Datum_tijd`. The reschedule proposal fields (`VI_Voorgestelde_Datum`, `VI_Voorgestelde_Tijdblokken`) are scratchpad; they do not replace `Datum_tijd` until acceptance.
+
+**Tijdblokken → single datetime collapse.** The aanvrager proposes one date plus a list of tijdblokken (candidate windows). At acceptance, the tegenpartij must pick one specific tijdblok — this becomes the committed `Datum_tijd`. Two new sub-fields support this:
+
+- `VI_Geaccepteerd_Tijdslot_Van` (DateTime) — start of the tegenpartij-selected window. Required when `VI_Tegenpartij_Reactie = accepted`.
+- `VI_Geaccepteerd_Tijdslot_Tot` (DateTime) — end of selected window. Optional; recorded for audit but not committed to `Datum_tijd`.
+
+The orchestrator commits `VI_Geaccepteerd_Tijdslot_Van` to `Datum_tijd` when transitioning to `done`.
+
 ## 6. Decision tree as code
 
 The decision tree is a **pure function** — no I/O, no API calls. It takes a snapshot of state and returns a list of `Outcome` records describing what should happen next. A separate `applyOutcomes` function performs the I/O.
@@ -103,12 +112,15 @@ type VoorinspectieRecord = {
   VI_Branch_Gekozen: "A_nieuwe_vi_datum" | "B_klant_kiest_leverdatum" | null;
   VI_Nieuwe_Leverdatum_Voorstel: string | null;
   VI_Tegenpartij_Reactie: "pending" | "accepted" | "rejected" | null;
+  VI_Geaccepteerd_Tijdslot_Van: string | null;   // datetime
+  Datum_tijd: string | null;                      // existing field — the committed VI datetime
 };
 
 type Outcome =
   | { kind: "set_status"; status: VoorstelStatus; reason?: string }
   | { kind: "notify"; who: Aanvrager | "klant" | "aannemer"; template: string }
   | { kind: "update_leverdatum"; nieuweDatum: string; direction: "later" | "eerder" }
+  | { kind: "commit_vi_datetime"; datetime: string }   // writes to Datum_tijd
   | { kind: "log_tijdlijn"; event: string };
 ```
 
@@ -149,8 +161,14 @@ export function evaluateReschedule(
   // Stage 3 — tegenpartij reacted
   if (vi.VI_Voorstel_Status === "awaiting_tegenpartij" && vi.VI_Tegenpartij_Reactie) {
     if (vi.VI_Tegenpartij_Reactie === "accepted") {
+      if (!vi.VI_Geaccepteerd_Tijdslot_Van) {
+        // Defensive — portal forgot to write the chosen tijdslot.
+        out.push({ kind: "set_status", status: "rejected", reason: "Acceptatie zonder gekozen tijdslot — portal-bug" });
+        return out;
+      }
+      out.push({ kind: "commit_vi_datetime", datetime: vi.VI_Geaccepteerd_Tijdslot_Van });
       out.push({ kind: "set_status", status: "done" });
-      out.push({ kind: "log_tijdlijn", event: `VI-datum ${vi.VI_Voorgestelde_Datum} bevestigd door beide partijen` });
+      out.push({ kind: "log_tijdlijn", event: `VI-datum ${vi.VI_Geaccepteerd_Tijdslot_Van} bevestigd door beide partijen` });
     } else {
       out.push({ kind: "set_status", status: "none", reason: "Tegenpartij weigerde; ronde opnieuw" });
       out.push({ kind: "notify", who: vi.VI_Voorgesteld_Door!, template: "vi_tegenpartij_weigert" });
@@ -295,9 +313,9 @@ Each step is independently shippable. If step 5 fails, steps 1–4 stay in produ
 
 These must be answered before implementation begins.
 
-1. **Actual VI date field — committing the proposal.** The Voorinspecties module presumably has a primary "Datum" field (the *real* VI date). The current design tracks the proposal in `VI_Voorgestelde_Datum`, but on acceptance (Stage 3 → `done`) it never copies that value to the real field. We need:
-   - The API name of the real VI date field on Voorinspecties (e.g. `Datum`?).
-   - Add a `{ kind: "commit_vi_datum"; datum: string }` outcome to the evaluator and write it in `applyOutcomes` when status moves to `done` from a buffer-ok path.
+1. ~~**Actual VI date field — committing the proposal.**~~ ✅ Resolved 2026-05-24. The committed VI moment lives in the existing `Datum_tijd` field (label "Datum/tijd voorinspectie", type datetime). Spec §5 and §6 updated accordingly: a `commit_vi_datetime` outcome writes the tegenpartij-selected tijdslot to `Datum_tijd` when status moves to `done`.
+
+   **New sub-question** raised by this resolution: the proposal carries multiple tijdblokken but `Datum_tijd` is a single datetime. The design adds two fields (`VI_Geaccepteerd_Tijdslot_Van/Tot`) so the tegenpartij selects one specific block at acceptance. Confirm this is the desired UX — alternative would be to auto-pick the first proposed block.
 2. **Notification delivery channels** — email (current LAB21 default), Cliq, both? Templates are abstract in the design; the notification system decides delivery. Likely a follow-up spec; for this design we only need the channel list to pick template names.
 3. **Manual admin override** — if an internal user manually sets `VI_Voorstel_Status=done` from Zoho UI, the orchestrator currently treats it as a no-op (no outcomes). Confirm this is the desired behavior, or whether the orchestrator should react (e.g., commit the VI datum).
 4. **Branch B "eerder" leverdatum side effects** — when the klant gives a leverdatum *earlier* than the original, do we re-evaluate the original VI date against the new (shorter) buffer? Current design says no: we accept the earlier date and the original VI date stays. Confirm.
