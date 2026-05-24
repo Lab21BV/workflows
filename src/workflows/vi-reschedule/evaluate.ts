@@ -34,5 +34,24 @@ export function evaluateReschedule(
     return out;
   }
 
+  // Stage 2 — aanvrager chose a branch
+  if (vi.VI_Voorstel_Status === "aanvrager_moet_kiezen" && vi.VI_Branch_Gekozen) {
+    if (vi.VI_Branch_Gekozen === "A_nieuwe_vi_datum") {
+      out.push({
+        kind: "set_status",
+        status: "none",
+        reason: "Nieuwe ronde — aanvrager kiest andere VI-datum",
+      });
+    } else {
+      out.push({ kind: "set_status", status: "awaiting_klant_leverdatum" });
+      out.push({
+        kind: "notify_portal_user",
+        who: "klant",
+        template: "vraag_nieuwe_leverdatum_met_toelichting",
+      });
+    }
+    return out;
+  }
+
   return out;
 }
