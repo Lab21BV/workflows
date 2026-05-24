@@ -23,12 +23,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "missing_x_workflow_header" }, { status: 400 });
   }
 
-  let payload: unknown;
-  try {
-    payload = raw ? JSON.parse(raw) : {};
-  } catch {
-    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+  // Zoho's standard workflow webhooks send "module_parameters" as URL query
+  // strings (with body.type=none). Merge query → body so workflow payload
+  // schemas don't have to know which transport was used.
+  let body: Record<string, unknown> = {};
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") body = parsed as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ error: "invalid_json" }, { status: 400 });
+    }
   }
+  const query: Record<string, string> = {};
+  req.nextUrl.searchParams.forEach((value, key) => {
+    query[key] = value;
+  });
+  const payload = { ...query, ...body };
 
   try {
     const result = await runWorkflow(workflowId, payload);
