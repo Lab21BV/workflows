@@ -1,0 +1,14 @@
+{
+  "id": "VI-504",
+  "Leverdatum_Origineel": "2026-07-15",
+  "Datum_tijd": "2026-06-10T09:00:00+01:00",
+  "VI_Voorstel_Status": "awaiting_tegenpartij",
+  "VI_Voorgestelde_Datum": "2026-06-20",
+  "VI_Voorgesteld_Door": "aannemer",
+  "VI_Buffer_Snapshot_Dagen": 21,
+  "VI_Branch_Gekozen": null,
+  "VI_Nieuwe_Leverdatum_Voorstel": null,
+  "VI_Toelichting_Klant": null,
+  "VI_Tegenpartij_Reactie": "accepted",
+  "VI_Geaccepteerd_Tijdslot_Van": null
+}

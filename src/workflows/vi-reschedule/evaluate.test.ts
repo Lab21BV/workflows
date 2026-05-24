@@ -38,3 +38,34 @@ describe("Stage 2: aanvrager chose branch", () => {
     ]);
   });
 });
+
+import tpAccepted from "./fixtures/vi-tegenpartij-accepted.json";
+import tpRejected from "./fixtures/vi-tegenpartij-rejected.json";
+import tpNoSlot from "./fixtures/vi-tegenpartij-no-tijdslot.json";
+
+describe("Stage 3: tegenpartij reacted", () => {
+  test("accepted → commit datetime + done + log + todo for inkoop", () => {
+    const out = evaluateReschedule(tpAccepted as VoorinspectieRecord, 14);
+    expect(out).toEqual([
+      { kind: "commit_vi_datetime", datetime: "2026-06-20T09:00:00+02:00" },
+      { kind: "set_status", status: "done" },
+      { kind: "log_tijdlijn", event: expect.stringContaining("bevestigd") },
+      expect.objectContaining({ kind: "create_todo", department: "inkoop_planning" }),
+    ]);
+  });
+
+  test("accepted without tijdslot → rejected (portal bug)", () => {
+    const out = evaluateReschedule(tpNoSlot as VoorinspectieRecord, 14);
+    expect(out).toEqual([
+      { kind: "set_status", status: "rejected", reason: expect.stringContaining("portal-bug") },
+    ]);
+  });
+
+  test("rejected → reset to none + notify aanvrager", () => {
+    const out = evaluateReschedule(tpRejected as VoorinspectieRecord, 14);
+    expect(out).toEqual([
+      { kind: "set_status", status: "none", reason: expect.stringContaining("weigerde") },
+      { kind: "notify_portal_user", who: "aannemer", template: "vi_tegenpartij_weigert" },
+    ]);
+  });
+});

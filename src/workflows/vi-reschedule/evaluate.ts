@@ -53,5 +53,43 @@ export function evaluateReschedule(
     return out;
   }
 
+  // Stage 3 — tegenpartij reacted
+  if (vi.VI_Voorstel_Status === "awaiting_tegenpartij" && vi.VI_Tegenpartij_Reactie) {
+    if (vi.VI_Tegenpartij_Reactie === "accepted") {
+      if (!vi.VI_Geaccepteerd_Tijdslot_Van) {
+        out.push({
+          kind: "set_status",
+          status: "rejected",
+          reason: "Acceptatie zonder gekozen tijdslot — portal-bug",
+        });
+        return out;
+      }
+      out.push({ kind: "commit_vi_datetime", datetime: vi.VI_Geaccepteerd_Tijdslot_Van });
+      out.push({ kind: "set_status", status: "done" });
+      out.push({
+        kind: "log_tijdlijn",
+        event: `VI-datum ${vi.VI_Geaccepteerd_Tijdslot_Van} bevestigd door beide partijen`,
+      });
+      out.push({
+        kind: "create_todo",
+        department: "inkoop_planning",
+        title: `VI-datum gewijzigd voor ${vi.id}`,
+        body: `Nieuwe VI-datum: ${vi.VI_Geaccepteerd_Tijdslot_Van}. Controleer of inkoop/levering aansluit.`,
+      });
+    } else {
+      out.push({
+        kind: "set_status",
+        status: "none",
+        reason: "Tegenpartij weigerde; ronde opnieuw",
+      });
+      out.push({
+        kind: "notify_portal_user",
+        who: vi.VI_Voorgesteld_Door!,
+        template: "vi_tegenpartij_weigert",
+      });
+    }
+    return out;
+  }
+
   return out;
 }
