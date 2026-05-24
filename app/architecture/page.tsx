@@ -27,11 +27,15 @@ export default function ArchitecturePage() {
             Every app writes to Zoho. Every app listens to Zoho webhooks.
           </li>
           <li>
-            <strong>LAB21 Operations is the only place where business rules
-            live.</strong>{" "}
-            Portals and configurators are dumb "intent recorders" — they
-            should never compute buffer rules, leverdatum cascades, or
-            anything else. That logic belongs here.
+            <strong>Each app owns its own subdomain logic. LAB21 Operations
+            owns the cross-app orchestration logic.</strong>{" "}
+            Klantenportal, Aannemersportal, and the configurators each
+            contain real business rules for their own subdomain (what a
+            klant can choose, how an aannemer schedules a VI, how a
+            configurator prices a product). LAB21 Operations owns the rules
+            that span apps and would otherwise drift across them — buffer
+            rules, leverdatum cascades, status orchestration, multi-party
+            workflows.
           </li>
           <li>
             <strong>Every app keeps Zoho access inside one thin file</strong>{" "}
@@ -63,30 +67,30 @@ export default function ArchitecturePage() {
             margin: 0,
           }}
         >{`
-                                  ┌──────────────────────────────┐
-                                  │          Zoho CRM            │
-                                  │           (SSOT)             │
-                                  └─┬──────────┬──────────────┬──┘
-                                    │          │              │
-                  ┌─────────────────┘          │              └────────────────────┐
-                  │ webhook                    │ webhook                           │ webhook
-                  │ "field changed"            │                                   │
-                  ▼                            ▼                                   ▼
-          ┌──────────────┐            ┌──────────────────┐                ┌─────────────────┐
-          │ Klantenport. │            │ Lab21 Operations │                │ Aannemersportal │
-          │              │            │  (decision brain)│                │                 │
-          └──────▲───────┘            └─────────┬────────┘                └────────▲────────┘
-                 │                              │                                  │
-                 │ write intent                 │ write decision outcome           │ write intent
-                 │                              │                                  │
-                 └──────────────────────────────┼──────────────────────────────────┘
-                                                ▼
-                                           (back to Zoho CRM at the top)
+                                            ┌──────────────────────────────┐
+                                            │          Zoho CRM            │
+                                            │           (SSOT)             │
+                                            └─┬──────┬──────────┬────────┬─┘
+                                              │      │          │        │
+        ┌─────────────────────────────────────┘      │          │        └──────────────────────────────┐
+        │ webhook         ┌──────────────────────────┘          │                                       │
+        │ "field changed" │ webhook                             │ webhook                       webhook │
+        ▼                 ▼                                     ▼                                       ▼
+┌──────────────┐  ┌─────────────────────┐            ┌──────────────────┐                  ┌─────────────────┐
+│ Klantenport. │  │ Aannemer Management │            │ Lab21 Operations │                  │ Aannemersportal │
+│              │  │       Portal        │            │ (decision brain) │                  │                 │
+└──────▲───────┘  └──────────▲──────────┘            └─────────┬────────┘                  └────────▲────────┘
+       │                     │                                 │                                    │
+       │ write intent        │ write intent                    │ write decision outcome             │ write intent
+       │                     │                                 │                                    │
+       └─────────────────────┴─────────────────────────────────┼────────────────────────────────────┘
+                                                               ▼
+                                                     (back to Zoho CRM at the top)
 
-         ┌────────────────┐
-         │ Configurators  │ ────── write orders/products ──────► Zoho CRM
-         │                │ ◄───── webhook on relevant change ──┘
-         └────────────────┘
+ ┌────────────────┐
+ │ Configurators  │ ────── write orders/products ──────► Zoho CRM
+ │                │ ◄───── webhook on relevant change ──┘
+ └────────────────┘
 `}</pre>
       </div>
 
@@ -106,13 +110,34 @@ export default function ArchitecturePage() {
               <td style={td}><strong>Klantenportal</strong></td>
               <td style={td}>Klant intents (e.g. choose leverdatum)</td>
               <td style={td}>Fields affecting klant's view</td>
-              <td style={td}>(future — outside Zoho)</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/klantenportal">
+                  Lab21BV/klantenportal
+                </a>
+              </td>
             </tr>
             <tr style={tr}>
               <td style={td}><strong>Aannemersportal</strong></td>
               <td style={td}>Aannemer intents (e.g. propose VI date)</td>
               <td style={td}>Fields affecting aannemer's view</td>
-              <td style={td}>(future — replacing Zoho Creator)</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/aannemers">
+                  Lab21BV/aannemers
+                </a>{" "}
+                <span style={{ color: "var(--muted)", fontSize: 11 }}>
+                  (replacing Zoho Creator)
+                </span>
+              </td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Aannemer Management Portal</strong></td>
+              <td style={td}>Aannemer-management intents (assignments, onboarding, status changes)</td>
+              <td style={td}>Fields affecting aannemer-management view</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/aannemersmanagement">
+                  Lab21BV/aannemersmanagement
+                </a>
+              </td>
             </tr>
             <tr style={tr}>
               <td style={td}><strong>Configurators</strong></td>
@@ -152,16 +177,20 @@ export default function ArchitecturePage() {
         </div>
         <div className="card">
           <strong style={{ color: "var(--accent) " }}>
-            2. Business rules in ONE place
+            2. Cross-app rules in ONE place
           </strong>
           <p style={{ color: "var(--fg)", marginTop: 8 }}>
-            Decision logic (buffer rules, cascades, validations beyond
-            field-level) lives only in LAB21 Operations. Portals/configurators
-            record raw intent.
+            Cross-app decision logic — buffer rules, leverdatum cascades,
+            multi-party status orchestration, validations that span more
+            than one app — lives only in LAB21 Operations. Each portal and
+            configurator still owns the business rules for its own
+            subdomain.
           </p>
           <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
-            Why: rule changes happen in one file, not 3–4 apps with drift
-            risk.
+            Why: rules that touch multiple apps must live in one place to
+            avoid drift. Rules that only touch one subdomain belong in that
+            app, where the team owning it can iterate without touching the
+            orchestrator.
           </p>
         </div>
       </div>
@@ -196,25 +225,91 @@ export default function ArchitecturePage() {
         </p>
       </div>
 
+      <h2>
+        Portal read store: Leaseweb mirror DB{" "}
+        <span
+          style={{
+            fontSize: 11,
+            color: "var(--muted)",
+            fontWeight: 400,
+            letterSpacing: 0.05,
+            textTransform: "uppercase",
+          }}
+        >
+          (to be built)
+        </span>
+      </h2>
+      <div className="card">
+        <p style={{ color: "var(--fg)" }}>
+          For Zoho webhooks to actually work for the portals, each portal
+          needs a local read store it can serve pages from. Hitting Zoho
+          on every page load is not viable — API rate limits, latency, and
+          query expressiveness all push against it. The answer is a second
+          database hosted in Leaseweb that mirrors the relevant Zoho data
+          (a <em>spiegeling</em> of Zoho).
+        </p>
+        <p style={{ color: "var(--fg)" }}>How it flows:</p>
+        <ol style={{ color: "var(--fg)", paddingLeft: 20 }}>
+          <li>
+            Zoho fires a webhook on a field change (the same webhook that
+            already feeds LAB21 Operations).
+          </li>
+          <li>
+            The webhook also updates the Leaseweb mirror DB so it stays in
+            sync with Zoho field-by-field.
+          </li>
+          <li>
+            Portals read from the Leaseweb mirror (fast, no Zoho rate
+            limits) and write intents back to Zoho via their thin{" "}
+            <code>src/repo/zoho.ts</code> wall.
+          </li>
+          <li>
+            Reconciliation crons in LAB21 Operations catch any missed
+            webhooks and re-sync the mirror from Zoho periodically.
+          </li>
+        </ol>
+        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
+          Zoho remains the single source of truth. The Leaseweb mirror is
+          a read-optimized projection — never the authority. Portals never
+          write to it directly; all writes still go through Zoho, and the
+          mirror catches up via webhook + reconciliation.
+        </p>
+        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
+          This is also the natural staging point for the future
+          Zoho-to-Postgres swap: once the mirror is the de-facto read
+          source and Zoho's role narrows to write-target, replacing Zoho
+          with the mirror itself becomes a much smaller step.
+        </p>
+      </div>
+
       <h2>How portals push updates to the user's browser</h2>
       <div className="card">
         <p style={{ color: "var(--fg)" }}>
-          When a portal receives a Zoho webhook, the user's open browser tab
-          needs to refresh. Three options, simplest first:
+          With the Leaseweb mirror DB carrying the read state, the question
+          "how does the user's browser learn about an update" cleanly
+          separates from "how does the mirror learn about an update." The
+          mirror catches up via Zoho webhook + reconciliation cron (see the
+          section above). What's left is the portal-to-browser hop. Three
+          options, simplest first:
         </p>
         <ul style={{ color: "var(--fg)", paddingLeft: 20 }}>
           <li>
-            <strong>Polling (default).</strong> Browser asks the portal "any
-            change?" every 3–5 seconds. Good enough for all current human-
-            paced flows.
+            <strong>Polling (default).</strong> Browser asks the portal
+            "any change?" every 3–5 seconds; the portal answers by reading
+            from the Leaseweb mirror. Good enough for all current
+            human-paced flows.
           </li>
           <li>
-            <strong>Server-Sent Events (SSE).</strong> Server pushes updates
-            to browser tabs in real time. Upgrade later if needed.
+            <strong>Server-Sent Events (SSE), backed by Postgres
+            LISTEN/NOTIFY.</strong> When the webhook handler updates the
+            mirror, Postgres fires a <code>NOTIFY</code>; the portal's SSE
+            stream picks it up and pushes to open browser tabs in real
+            time. Cheap to add later because it runs on the same DB the
+            portal already reads from — no extra fan-out infrastructure.
           </li>
           <li>
             <strong>WebSockets.</strong> Bi-directional. Overkill for these
-            flows.
+            read-mostly flows.
           </li>
         </ul>
       </div>
