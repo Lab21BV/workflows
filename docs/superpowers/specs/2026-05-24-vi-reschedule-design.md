@@ -180,8 +180,27 @@ export function evaluateReschedule(
   if (vi.VI_Voorstel_Status === "klant_kiest_leverdatum" && vi.VI_Nieuwe_Leverdatum_Voorstel) {
     const direction = isLater(vi.VI_Nieuwe_Leverdatum_Voorstel, vi.Leverdatum_Origineel) ? "later" : "eerder";
     out.push({ kind: "update_leverdatum", nieuweDatum: vi.VI_Nieuwe_Leverdatum_Voorstel, direction });
-    out.push({ kind: "set_status", status: "done" });
-    out.push({ kind: "log_tijdlijn", event: `Leverdatum gewijzigd naar ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction})` });
+
+    // Re-check buffer against the proposed VI date with the new leverdatum.
+    // Required because klant may have chosen an earlier leverdatum that still
+    // doesn't give enough headroom, or even a later one that's only barely OK.
+    const buffer = vi.VI_Buffer_Snapshot_Dagen ?? 7 + langsteLevertijdDagen;
+    const gap = daysBetween(vi.VI_Voorgestelde_Datum!, vi.VI_Nieuwe_Leverdatum_Voorstel);
+
+    if (gap >= buffer) {
+      // Buffer is now satisfied. Route to tegenpartij acceptance (klant is
+      // tegenpartij when aanvrager=aannemer; aannemer is tegenpartij when
+      // aanvrager=klant). The portal collapses this into the same screen
+      // where the klant just submitted leverdatum, so it feels like one step.
+      out.push({ kind: "set_status", status: "awaiting_tegenpartij" });
+      out.push({ kind: "notify", who: tegenpartij(vi.VI_Voorgesteld_Door!), template: "vi_voorstel_review_na_leverdatum" });
+      out.push({ kind: "log_tijdlijn", event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer nu ok → tegenpartij beslist` });
+    } else {
+      // Klant's leverdatum still doesn't give enough headroom — fresh round.
+      out.push({ kind: "set_status", status: "none", reason: `Nieuwe leverdatum onvoldoende (gap ${gap}, vereist ${buffer}); nieuwe ronde` });
+      out.push({ kind: "notify", who: vi.VI_Voorgesteld_Door!, template: "vi_leverdatum_onvoldoende" });
+      out.push({ kind: "log_tijdlijn", event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer ${buffer} > gap ${gap} → nieuwe ronde` });
+    }
     return out;
   }
 
@@ -313,10 +332,20 @@ Each step is independently shippable. If step 5 fails, steps 1–4 stay in produ
 
 These must be answered before implementation begins.
 
-1. ~~**Actual VI date field — committing the proposal.**~~ ✅ Resolved 2026-05-24. The committed VI moment lives in the existing `Datum_tijd` field (label "Datum/tijd voorinspectie", type datetime). Spec §5 and §6 updated accordingly: a `commit_vi_datetime` outcome writes the tegenpartij-selected tijdslot to `Datum_tijd` when status moves to `done`.
+1. ~~**Actual VI date field — committing the proposal.**~~ ✅ Resolved 2026-05-24. Committed VI moment lives in the existing `Datum_tijd` field (label "Datum/tijd voorinspectie", type datetime). Spec §5 and §6 updated.
 
-   **New sub-question** raised by this resolution: the proposal carries multiple tijdblokken but `Datum_tijd` is a single datetime. The design adds two fields (`VI_Geaccepteerd_Tijdslot_Van/Tot`) so the tegenpartij selects one specific block at acceptance. Confirm this is the desired UX — alternative would be to auto-pick the first proposed block.
+1a. ~~**Tijdblok selection at acceptance.**~~ ✅ Resolved 2026-05-24. Tegenpartij picks one specific tijdblok at acceptance (fields `VI_Geaccepteerd_Tijdslot_Van/Tot`). The chosen Van datetime is committed to `Datum_tijd`.
+
 2. **Notification delivery channels** — email (current LAB21 default), Cliq, both? Templates are abstract in the design; the notification system decides delivery. Likely a follow-up spec; for this design we only need the channel list to pick template names.
+
 3. **Manual admin override** — if an internal user manually sets `VI_Voorstel_Status=done` from Zoho UI, the orchestrator currently treats it as a no-op (no outcomes). Confirm this is the desired behavior, or whether the orchestrator should react (e.g., commit the VI datum).
-4. **Branch B "eerder" leverdatum side effects** — when the klant gives a leverdatum *earlier* than the original, do we re-evaluate the original VI date against the new (shorter) buffer? Current design says no: we accept the earlier date and the original VI date stays. Confirm.
+
+4. ~~**Branch B leverdatum buffer re-evaluation.**~~ ✅ Resolved 2026-05-24. Re-evaluate buffer against the *proposed* VI date and the *new* leverdatum. If buffer satisfied → route to `awaiting_tegenpartij` (the klant's leverdatum submission collapses into the same portal screen as their acceptance, so this feels like one step UX-wise). If buffer still broken → kick a fresh round.
+
+   **Follow-up sub-question:** when aanvrager = aannemer, the tegenpartij is the klant — who *just* submitted the new leverdatum. Should the portal:
+   - **A** — show the acceptance UI immediately after leverdatum submission (single-screen flow), or
+   - **B** — send a separate notification and let the klant come back to accept?
+
+   The current design assumes A and routes to `awaiting_tegenpartij` always. Confirm.
+
 5. **Existing parallel Zoho-native workflows.** From the inventory, several rules already touch this area (`LAB21-T177 - Datum voorinspectie updaten na acceptatie`, `LAB21-T180`, `LAB21-T182`, `LAB21-T183`). Decide per-rule whether to keep, disable, or replace as part of rollout step 5. Most likely they get disabled once this chain proves stable.
