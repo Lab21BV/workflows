@@ -4,6 +4,15 @@ import { runWorkflow } from "@/src/index";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+// Zoho's standard webhook UI configures "module_parameters" (record-data
+// references like ${Voorinspecties.id}) and sends them as HTTP headers with
+// body.type=none. HTTP normalizes header names to lowercase on the wire, so
+// we map known headers back to the camelCase keys that workflow schemas
+// expect. Extend this map per workflow.
+const HEADER_TO_PAYLOAD: Record<string, string> = {
+  voorinspectieid: "voorinspectieId",
+};
+
 export async function POST(req: NextRequest) {
   const raw = await req.text();
 
@@ -39,7 +48,12 @@ export async function POST(req: NextRequest) {
   req.nextUrl.searchParams.forEach((value, key) => {
     query[key] = value;
   });
-  const payload = { ...query, ...body };
+  const headerFields: Record<string, string> = {};
+  for (const [headerName, payloadKey] of Object.entries(HEADER_TO_PAYLOAD)) {
+    const v = req.headers.get(headerName);
+    if (v) headerFields[payloadKey] = v;
+  }
+  const payload = { ...headerFields, ...query, ...body };
 
   try {
     const result = await runWorkflow(workflowId, payload);
