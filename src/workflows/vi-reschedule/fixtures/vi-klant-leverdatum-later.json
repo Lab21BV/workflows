@@ -1,0 +1,14 @@
+{
+  "id": "VI-505",
+  "Leverdatum_Origineel": "2026-07-15",
+  "Datum_tijd": "2026-06-10T09:00:00+01:00",
+  "VI_Voorstel_Status": "klant_kiest_leverdatum",
+  "VI_Voorgestelde_Datum": "2026-06-25",
+  "VI_Voorgesteld_Door": "aannemer",
+  "VI_Buffer_Snapshot_Dagen": 21,
+  "VI_Branch_Gekozen": "B_klant_kiest_leverdatum",
+  "VI_Nieuwe_Leverdatum_Voorstel": "2026-07-20",
+  "VI_Toelichting_Klant": "Vakantie tot 18 juli.",
+  "VI_Tegenpartij_Reactie": null,
+  "VI_Geaccepteerd_Tijdslot_Van": null
+}

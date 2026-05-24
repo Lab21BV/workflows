@@ -69,3 +69,37 @@ describe("Stage 3: tegenpartij reacted", () => {
     ]);
   });
 });
+
+import klantLater from "./fixtures/vi-klant-leverdatum-later.json";
+import klantEerderOk from "./fixtures/vi-klant-leverdatum-eerder-ok.json";
+import klantEerderBad from "./fixtures/vi-klant-leverdatum-eerder-bad.json";
+
+describe("Stage 4: klant gave new leverdatum", () => {
+  test("later + buffer ok → update leverdatum + awaiting_tegenpartij + todos", () => {
+    const out = evaluateReschedule(klantLater as VoorinspectieRecord, 14);
+    const kinds = out.map((o) => o.kind);
+    expect(kinds).toContain("update_leverdatum");
+    expect(kinds).toContain("set_status");
+    expect(out.find((o) => o.kind === "set_status")).toMatchObject({ status: "awaiting_tegenpartij" });
+    expect(out.filter((o) => o.kind === "create_todo")).toHaveLength(2);
+  });
+
+  test("eerder + buffer ok → awaiting_tegenpartij", () => {
+    const out = evaluateReschedule(klantEerderOk as VoorinspectieRecord, 14);
+    expect(out.find((o) => o.kind === "set_status")).toMatchObject({ status: "awaiting_tegenpartij" });
+    expect(out.find((o) => o.kind === "update_leverdatum")).toMatchObject({ direction: "eerder" });
+  });
+
+  test("eerder + buffer broken → fresh round (none)", () => {
+    const out = evaluateReschedule(klantEerderBad as VoorinspectieRecord, 14);
+    expect(out.find((o) => o.kind === "set_status")).toMatchObject({ status: "none" });
+    expect(out.find((o) => o.kind === "notify_portal_user")).toMatchObject({
+      template: "vi_leverdatum_onvoldoende",
+    });
+  });
+
+  test("todos emitted on both branches (eerder bad)", () => {
+    const out = evaluateReschedule(klantEerderBad as VoorinspectieRecord, 14);
+    expect(out.filter((o) => o.kind === "create_todo")).toHaveLength(2);
+  });
+});

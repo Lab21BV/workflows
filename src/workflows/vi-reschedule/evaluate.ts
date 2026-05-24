@@ -1,5 +1,5 @@
 import type { Outcome, VoorinspectieRecord } from "./types";
-import { daysBetween, tegenpartij } from "./helpers";
+import { daysBetween, isLater, tegenpartij } from "./helpers";
 
 export function evaluateReschedule(
   vi: VoorinspectieRecord,
@@ -88,6 +88,62 @@ export function evaluateReschedule(
         template: "vi_tegenpartij_weigert",
       });
     }
+    return out;
+  }
+
+  // Stage 4 — klant gave a new leverdatum
+  if (vi.VI_Voorstel_Status === "klant_kiest_leverdatum" && vi.VI_Nieuwe_Leverdatum_Voorstel) {
+    const direction = isLater(vi.VI_Nieuwe_Leverdatum_Voorstel, vi.Leverdatum_Origineel)
+      ? "later"
+      : "eerder";
+    out.push({
+      kind: "update_leverdatum",
+      nieuweDatum: vi.VI_Nieuwe_Leverdatum_Voorstel,
+      direction,
+    });
+
+    const buffer = vi.VI_Buffer_Snapshot_Dagen ?? 7 + langsteLevertijdDagen;
+    const gap = daysBetween(vi.VI_Voorgestelde_Datum!, vi.VI_Nieuwe_Leverdatum_Voorstel);
+
+    if (gap >= buffer) {
+      out.push({ kind: "set_status", status: "awaiting_tegenpartij" });
+      out.push({
+        kind: "notify_portal_user",
+        who: tegenpartij(vi.VI_Voorgesteld_Door!),
+        template: "vi_voorstel_review_na_leverdatum",
+      });
+      out.push({
+        kind: "log_tijdlijn",
+        event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer nu ok → tegenpartij beslist`,
+      });
+    } else {
+      out.push({
+        kind: "set_status",
+        status: "none",
+        reason: `Nieuwe leverdatum onvoldoende (gap ${gap}, vereist ${buffer}); nieuwe ronde`,
+      });
+      out.push({
+        kind: "notify_portal_user",
+        who: vi.VI_Voorgesteld_Door!,
+        template: "vi_leverdatum_onvoldoende",
+      });
+      out.push({
+        kind: "log_tijdlijn",
+        event: `Leverdatum → ${vi.VI_Nieuwe_Leverdatum_Voorstel} (${direction}); buffer ${buffer} > gap ${gap} → nieuwe ronde`,
+      });
+    }
+    out.push({
+      kind: "create_todo",
+      department: "inkoop_planning",
+      title: `Leverdatum gewijzigd (${direction}) voor ${vi.id}`,
+      body: `Nieuwe leverdatum: ${vi.VI_Nieuwe_Leverdatum_Voorstel} (oorspronkelijk ${vi.Leverdatum_Origineel}). Controleer inkoop en levering.`,
+    });
+    out.push({
+      kind: "create_todo",
+      department: "accountmanager",
+      title: `Klant heeft leverdatum aangepast voor ${vi.id}`,
+      body: `Nieuwe leverdatum (${direction}): ${vi.VI_Nieuwe_Leverdatum_Voorstel}. Toelichting klant: ${vi.VI_Toelichting_Klant ?? "—"}.`,
+    });
     return out;
   }
 
