@@ -396,6 +396,37 @@ export default function ArchitecturePage() {
           assignment table mean that swap is a substitution of the
           actor, not a schema change.
         </p>
+        <p style={{ color: "var(--fg)", marginBottom: 0 }}>
+          <strong>Deferred until Lab21adviseurs is built.</strong> The
+          three follow-ups below are intentionally postponed — they only
+          start paying off once a verkoper-facing app exists to drive
+          them:
+        </p>
+        <ul style={{ color: "var(--fg)", paddingLeft: 20, marginBottom: 0, marginTop: 8 }}>
+          <li>
+            <strong>Order-creation hook.</strong> Call{" "}
+            <code>snapshotOrderAssignment(zohoOrderId, verkoperId)</code>{" "}
+            at the moment a verkoper commits a new Sales_Order (or a
+            configurator does on their behalf). Today the row is created
+            in Zoho without any entry in <code>order_assignments</code>.
+          </li>
+          <li>
+            <strong>Real AM filter on todo pages.</strong> Change{" "}
+            <code>/todo/accountmanager</code> + <code>/todo/inkoop-planning</code>{" "}
+            from <code>Tasks.Department</code> string filtering to a JOIN
+            on <code>order_assignments.accountmanager_id</code>. Then a
+            specific AM only sees tasks tied to her own orders, not the
+            whole department bucket.
+          </li>
+          <li>
+            <strong>Auth layer.</strong> Magic-link or SSO via the
+            company-email tenant so the app knows{" "}
+            <em>which</em> employee is signed in. Until then we run with
+            a single admin context. Decision on provider (Clerk /
+            Stack / Vercel-native / custom) lives with the
+            Lab21adviseurs build because that app needs auth first.
+          </li>
+        </ul>
       </div>
 
       <h2>Read on for the details</h2>
