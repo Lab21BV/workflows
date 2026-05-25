@@ -13,25 +13,33 @@
     "zoho:probe": "tsx src/scripts/probe.ts",
     "zoho:sync": "tsx src/scripts/sync-metadata.ts",
     "zoho:create-vi-fields": "tsx src/scripts/create-vi-fields.ts",
-    "zoho:create-vi-workflow-rule": "tsx src/scripts/create-vi-workflow-rule.ts"
+    "zoho:create-vi-workflow-rule": "tsx src/scripts/create-vi-workflow-rule.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.2",
     "geist": "^1.7.1",
     "marked": "^18.0.4",
     "mermaid": "^11.15.0",
     "next": "^15.1.4",
+    "pg": "^8.21.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitest/ui": "^2.1.9",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "^0.31.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.9"
