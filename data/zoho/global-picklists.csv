@@ -1,0 +1,44 @@
+ID,API naam,Display label,Aantal waardes,Voorbeeldwaardes,Gebruikt door,Categorie
+728921000000383025,Source,Bron,25,"Aanbeveling werknemer | Advertentie | Afspraak | Bellen",Deals.Lead_Source,Lead/Sales
+728921000000768763,Vestigingen,Vestigingen,18,"Alle | Amersfoort | Amsterdam – Oostzaan | Amsterdam – Zuidoost","Contacts.Voorkeurs_vestiging, Deals.Voorkeurs_vestiging",LAB21 organisatie
+728921000000768949,Categorie_n,Hoofdcategorie,15,"Vloeren | Gordijnen | Zonwering (binnen) | Shutters","Products.Product_Category, Planningen.Type_product2",Product
+728921000000827282,Categorie_1,Subcategorie,38,"PVC | Laminaat | Hout | Inbetween",Products.Categorie_1,Product
+728921000000885224,Type_vloer,Type vloer,13,"Lijm PVC | Lijm PVC visgraat | Lijm PVC hongaarse punt / weense punt | Lijm PVC tegels",Planningen.Type_product,Planning
+728921000001059447,Ruimtes,Ruimtes,25,"Aanbouw | Badkamer | Berging | Extra kamer I",(geen — vermoedelijk in Ruimtes-subform),Order/VI
+728921000001165225,Basisvloer,Basisvloer/Jumpax,38,"Airbase | Alle | Anders | Anhydriet","Sales_Orders.Muren_dekvloer_storten_type, Sales_Orders.Type_dekvloer, Sales_Orders.Type_dekvloer_aanbouw, Sales_Orders.Type_dekvloer_verbouw",Bouwkundig
+728921000001208299,Diensten_Planning,Diensten Planning,31,"Vloer verwijderen | Droogbouw | Ondergrond saneren | Traprenovatie",Planningen.Dienst,Planning
+728921000001208374,Uitvoering_Door,Uitvoering Door,6,"Aannemer van Lab21 | Lab21 | Relatie | Leverancier",Planningen.Uitvoerder,Planning
+728921000001218477,Ordertype,Ordertype,18,"Materiaal | Dienst | Materiaal & Dienst | Omwisselorder (Inkomend)",Sales_Orders.Ordertype,Order
+728921000001308108,Magazijnen,Magazijnen,26,"001 | 002 | 003 | 004",Sales_Orders.Ordermagazijn,Logistiek
+728921000003102405,Plan_voor_hoge_plinten,Plan voor hoge plinten,5,"Klant wil de bestaande hoge plint laten staan | Klant wil Lab21 bestaande hoge plint laten verwijderen | Klant wil de aannemer de bestaande plint laten verwijderen | Klant wil zelf bestaande hoge plint verwijderen","Sales_Orders.Plan_voor_hoge_plinten, Voorinspecties.Plan_voor_hoge_plinten",VI/Order
+728921000003102628,Soort_bebouwing,Soort bebouwing,29,"2-onder-1-kap-woning | Appartement | Bel-etage | Benedenwoning","Sales_Orders.Soort_bebouwing, Deals.Soort_woning",Sales
+728921000003293418,Nieuw_bestaand,Nieuw/Bestaand,4,"Huidige woning | Verhuizing bestaande woning | Verhuizing nieuwbouw woning","Sales_Orders.Type, Deals.Nieuw_of_bestaand",Sales
+728921000003693086,team_member_role__s,Team Member Role,1,"Eigenaar",(Zoho system field),System
+728921000003693087,access__s,Access,3,"Read Only | Read Write | Full Access",(Zoho system field),System
+728921000004283426,Configurator,Configurator,9,"Droogbouw | Gordijn | Hor | Trap",Sales_Orders.Configurator,Configurators
+728921000005155237,Bezwaar_klant,Bezwaar klant,17,"Kijkt naar vloer buiten assortiment Lab21 | Offertes vergelijken | Onvoldoende budget | Overige reden",Deals.Bezwaar_klant,Sales
+728921000005172184,Ori_ntatiefase,Oriëntatiefase,4,"Nog geen andere vloershowroom bezocht | Al meer dan 2 vloershowrooms bezocht | Al 1 a 2 vloershowrooms bezocht",Deals.Ori_ntatiefase1,Sales
+728921000005756927,Aanhef,Aanhef,6,"Dhr. | Mevrouw. | Mw. | Dokter.","Contacts.Aanhef, Deals.Aanhef, Deals.Aanhef_familie_lid",Contact
+728921000005759234,Communicatiestijl,Communicatiestijl,5,"Formeel | Amikaal | Duo formeel | Duo amikaal","Sales_Orders.Communicatiestijl, Deals.Communicatiestijl",Sales
+728921000006447023,Tijdlijn_omschrijvingen,Tijdlijn activiteit,42,"DE-010 - Electra begin/eind | DE-011 - Keuken begin/eind | DE-012 - Meubels | DE-013 - Oplevering aanbouw",Datums_2.Omschrijving,Tijdlijn
+728921000010714043,Accountmanagers,Accountmanagers,3,"Accountmanager 01 | Accountmanager 02",(geen direct gevonden — mogelijk in Tasks/Notes),LAB21 organisatie
+728921000010824646,Betaling,Betaalopties,4,"Vooruit | Restant | Volledig","Sales_Orders.Betaling, Deals.Betaling",Financieel
+728921000011696954,Beoordeling,Beoordeling,6,"★☆☆☆☆ | ★★☆☆☆ | ★★★☆☆ | ★★★★☆",(geen direct gevonden — vermoedelijk Reviews),Reviews
+728921000017618047,Patroon,Patronen,9,"Brede stroken | Hongaarse punt | Patroon | Rechte stroken",(geen direct gevonden),Product
+728921000019042694,Laying_methode,Installatie,7,"Zwevend | Gelijmd | Keuze | Floating no click",Products.Laying_Methode,Product
+728921000019777305,Merken,Merken,70,"Albero | Alle | AltvetPet Inc. | Ambiant",Products.Manufacturer,Product
+728921000021710170,Bestaande_vloer,Bestaande vloer,23,"Geen | Jumpax | Keramische tegel | Klik Marmoleum",(geen direct gevonden),Bouwkundig
+728921000035953153,Country__s,Country (system),248,"Afghanistan | Ålandseilanden | Albanië | Algerije",Zoho address subform,System
+728921000035953653,States__s,States (system),3893,"Bougainville | Centrale Provincie (Papoea-Nieuw-Guinea) | Provincie Chimbu | Oost-Nieuw-Brittannië",Zoho address subform,System
+,,,,,,
+TOELICHTING — Hoe global picklists (Global Sets) werken,,,,,,
+"Een global picklist is één centraal beheerde lijst van keuze-waardes die door meerdere modules en velden gedeeld wordt.",,,,,,
+"Wijzig je een waarde in de global picklist, dan past die wijziging zich automatisch toe op elk veld dat de set gebruikt.",,,,,,
+"Display vs actual_value: gebruikers zien `display_value`; records slaan `actual_value` op. Bij de meeste sets zijn die gelijk, soms verschillen ze (zie kolom 'Subcategorie' op het andere werkblad).",,,,,,
+"Eenmaal aangemaakt is `actual_value` van een entry NIET hernoembaar via de API — alleen toevoegen, ordening en `display_value` zijn aanpasbaar.",,,,,,
+"Limiet: alleen picklist + multiselectpicklist field-types kunnen aan een global set worden gekoppeld.",,,,,,
+"Aanmaken / beheren in Zoho UI: Setup → Customization → Modules en Fields → Global Set tab. Of via API: GET /settings/global_picklists.",,,,,,
+"Voordelen: 1) één bron voor gedeelde lookups (Hoofdcategorie, Vestigingen, Aanhef). 2) consistentie tussen modules. 3) waardes toevoegen op één plek werkt door op alle gebruikers.",,,,,,
+"Nadelen: 1) eenmaal gedeeld is een set lastig terug-te-splitsen. 2) bij grote verandering (waardes verwijderen/hernoemen) raken alle gekoppelde records mee. 3) je kunt geen module-specifieke waardes toevoegen.",,,,,,
+"Veelgebruikte LAB21 sets: Categorie_n (Hoofdcategorie, 15) en Categorie_1 (Subcategorie, 38) drijven Products + Planningen. Vestigingen (18) wordt op zowel Contacts als Deals gebruikt voor showroom-keuze. Tijdlijn_omschrijvingen (42) is de centrale fase-naamgeving in Datums_2.",,,,,,
+"Niet alle sets hebben (zichtbare) gebruikers in deze scan — sommige worden via subforms gebruikt (Ruimtes), via system-features (Country__s, States__s) of zijn nog niet aan een veld gekoppeld. Het kolom 'Gebruikt door' toont enkel wat in de scope van mijn token zichtbaar was.",,,,,,
