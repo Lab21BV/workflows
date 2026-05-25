@@ -1,0 +1,26 @@
+Veld,Sequence,Display,API actual,Aantal records (zichtbaar in scope)
+"Fase (Status)",1,"Aangemaakt","Created",0
+"Fase (Status)",2,"Wacht op aanbetaling","Wacht op aanbetaling",0
+"Fase (Status)",3,"Aanbetaling ontvangen","Aanbetaling ontvangen",0
+"Fase (Status)",4,"Goedgekeurd","Approved",0
+"Fase (Status)",5,"Gereserveerd","Gereserveerd",0
+"Fase (Status)",6,"Leverancier toewijzen","Order verwerken",0
+"Fase (Status)",7,"Salescontrol uitvoeren","Ordercheck",2
+"Fase (Status)",8,"Salescontrol uitgevoerd","Salescontrol uitgevoerd",0
+"Fase (Status)",9,"Tijdlijn controle uitvoeren","Perform timecontrol",0
+"Fase (Status)",10,"Tijdlijn controle uitgevoerd","Timecontrol completed",0
+"Fase (Status)",11,"Vrijgegeven voor levering","Vrijgegeven voor levering",0
+"Fase (Status)",12,"Afgeleverd","Delivered",0
+"Fase (Status)",13,"Geannuleerd","Cancelled",0
+"Fase (Status)",14,"Verzamellijst afgedrukt","Verzamellijst afgedrukt",0
+"Fase (Status)",15,"Vrijgegeven voor verzamellijst","Vrijgegeven voor verzamellijst",0
+"Fase (Status)",16,"Verzamellijst verwerkt","Verzamellijst verwerkt",0
+"Fase (Status)",17,"Vrijgegeven voor facturering","Vrijgegeven voor facturering",0
+"Fase (Status)",18,"VI akkoord","VI akkoord",0
+"Fase (Status)",19,"VI gepland","VI gepland",0
+"Fase (Status)",20,"VI uitgevoerd","VI uitgevoerd",0
+"Status King (Status_King)",,(geen picklist-waardes),,0
+
+NOTITIE,,,,
+"Total scanned in scope",,,,2
+"Records zonder Status",,,,0
