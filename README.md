@@ -4,7 +4,7 @@ Code-based herbouw van Zoho CRM automatiseringen voor LAB21 BV, plus een
 tijdlijn-UI die per Sales_Order alle Datums_2 mijlpalen + gerelateerde
 Voorinspectie / Planning / Klantenservice records toont.
 
-Live: https://workflows-two.vercel.app
+Live: https://lab21-operations.vercel.app
 
 ## Stack
 

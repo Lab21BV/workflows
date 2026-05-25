@@ -4,7 +4,7 @@
 
 **Goal:** Build the voorinspectie reschedule chain inside LAB21 Operations — a stateless decision tree triggered by Zoho webhooks that validates buffer rules, handles two branches (new VI date vs. new leverdatum), commits outcomes to Zoho, and notifies the right internal department via a todo list.
 
-**Architecture:** Stateless re-evaluation. Zoho is the source of truth; the orchestrator reads current Voorinspectie state on each webhook, runs a pure decision function, and writes outcomes back to Zoho. All Zoho access lives behind `src/repo/*` thin wrappers so a future Postgres swap is bounded. Internal notifications become Zoho `Tasks` records scoped to a department via a new custom field; two pages (`/todo/accountmanager`, `/todo/inkoop-planning`) render department-scoped open todos. See spec: `docs/superpowers/specs/2026-05-24-vi-reschedule-design.md`. See live architecture: https://workflows-two.vercel.app/architecture.
+**Architecture:** Stateless re-evaluation. Zoho is the source of truth; the orchestrator reads current Voorinspectie state on each webhook, runs a pure decision function, and writes outcomes back to Zoho. All Zoho access lives behind `src/repo/*` thin wrappers so a future Postgres swap is bounded. Internal notifications become Zoho `Tasks` records scoped to a department via a new custom field; two pages (`/todo/accountmanager`, `/todo/inkoop-planning`) render department-scoped open todos. See spec: `docs/superpowers/specs/2026-05-24-vi-reschedule-design.md`. See live architecture: https://lab21-operations.vercel.app/architecture.
 
 **Tech Stack:**
 - Next.js 15 (App Router, RSC)
@@ -1691,7 +1691,7 @@ This task contains **no code changes**. The agent should print the checklist for
 | Instant action | Webhook |
 
 For the webhook action:
-- URL: `https://workflows-two.vercel.app/api/webhooks/zoho`
+- URL: `https://lab21-operations.vercel.app/api/webhooks/zoho`
 - Method: POST
 - Body type: **JSON** (not form-data — the route handler at `app/api/webhooks/zoho/route.ts` calls `JSON.parse`)
 - Body parameters: `voorinspectieId = ${Voorinspecties.id}` (Zoho substitutes the record id)

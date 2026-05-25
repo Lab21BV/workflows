@@ -4,7 +4,7 @@
 **Drafted with:** Claude Opus 4.7 (1M context)
 **Date:** 2026-05-24
 **Status:** Design locked; ready for implementation plan.
-**Architecture reference:** https://workflows-two.vercel.app/architecture (also `app/architecture/page.tsx`)
+**Architecture reference:** https://lab21-operations.vercel.app/architecture (also `app/architecture/page.tsx`)
 
 ---
 
@@ -300,7 +300,7 @@ The route is already wired in `app/api/webhooks/zoho/route.ts`. The new workflow
 | Trigger | On Field Update for: `VI_Voorstel_Status`, `VI_Branch_Gekozen`, `VI_Tegenpartij_Reactie`, `VI_Nieuwe_Leverdatum_Voorstel` |
 | Action | Webhook |
 | Method | POST |
-| URL | `https://workflows-two.vercel.app/api/webhooks/zoho` |
+| URL | `https://lab21-operations.vercel.app/api/webhooks/zoho` |
 | Custom parameter | `voorinspectieId = ${id}` |
 | Custom header | `Authorization: Bearer <ZOHO_WEBHOOK_SECRET>` |
 | Custom header | `x-workflow: vi-reschedule` |

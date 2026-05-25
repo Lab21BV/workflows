@@ -9,7 +9,7 @@
 
 import { ZohoClient } from "../zoho/client";
 
-const ENDPOINT_URL = "https://workflows-two.vercel.app/api/webhooks/zoho";
+const ENDPOINT_URL = "https://lab21-operations.vercel.app/api/webhooks/zoho";
 
 async function main() {
   const apply = process.argv.includes("apply");
