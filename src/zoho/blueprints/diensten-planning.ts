@@ -14,7 +14,10 @@
 export const DIENSTEN_PLANNING_ACTUAL_VALUE_OVERRIDES: Record<string, string> = {
   "Vloer verwijderen": "Optie 2",
   "Annulering order": "Annulering",
-  Controlelijst: "Controle lijst legdienst",
+  // 2026-05-25: cleanup-pogingscyclus laat "Controlelijst" achter met
+  // actual "Controlelijst__TMP_CLEANUP" (eerder: "Controle lijst legdienst",
+  // nu in Unused values als "Controlelijst (mismatch unused)").
+  Controlelijst: "Controlelijst__TMP_CLEANUP",
   "Dekvloer storten": "Aanbouw dekvloer storten",
 };
 
