@@ -57,14 +57,6 @@ export default function HomePage() {
         </dl>
       </div>
 
-      <h2>Tijdlijn-visualisatie</h2>
-      <div className="card">
-        <p style={{ color: "var(--fg)" }}>
-          Bekijk per Sales_Order de volledige tijdlijn van Datums_2 mijlpalen
-          inclusief gerelateerde Voorinspectie/Planning/Klantenservice records.
-        </p>
-        <a href="/tijdlijn">→ Open tijdlijn-zoeker</a>
-      </div>
     </>
   );
 }
