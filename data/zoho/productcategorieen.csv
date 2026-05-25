@@ -1,41 +1,47 @@
-Hoofdcategorie,Subcategorie,API Hoofdcategorie (actual),API Subcategorie (actual)
-Vloeren,PVC,Vloeren,PVC vloeren
-,Laminaat,,Laminaat
-,Hout,,Houten vloeren
-,,,
-Accessoires,Randafwerking,Accessoires,Plinten en profielen
-,Ondervloeren,,Ondervloeren
-,Onderhoudsmiddelen,,Onderhoudsmiddelen
-,Hulpmaterialen,,Legmaterialen
-,Gereedschappen,,Gereedschappen
-,Electro raamdecoratie,,Electro raamdecoratie
-,Gordijnen rail,,Gordijnen rail
-,Egaline & Lijmen,,Egaline & Lijmen
-,Overige,,Overige
-,,,
-Gordijnen,Inbetween,Gordijnen,Inbetween
-,Overgordijnen,,Overgordijnen
-,Blackout,,Blackout
-,Dimout,,Dimout
-,,,
-Zonwering (binnen),Jaloezie,Binnenzonwering,Jaloezie
-,Duette,,Duette
-,Plissé,,Plissé
-,Rolgordijnen,,Rolgordijnen
-,Shutter,,Shutter
-,Horren,,Horren
-,Geweven hout,,Geweven hout
-,,,
-Diensten,Montage vloer,Dienst,Montage vloer
-,Verwijderen vloer,,Verwijderen vloer
-,Droogbouw,,Droogbouw
-,Ondergrond sanering,,Ondergrond sanering
-,Vloerverwarming,,Vloerverwarming
-,Montage reno trap,,Montage reno trap
-,Montage lijm pvc trap,,Montage lijm pvc trap
-,Montage gordijn,,Montage gordijn
-,Montage zonwering (binnen),,Montage zonwering
-,Montage shutter,,Montage shutter
-,,,
-Traprenovatie,Reno trap,Traprenovatie,Reno trap
-,Lijm PVC trap,,Lijm PVC trap
+Hoofdcategorie,Subcategorie,API Hoofdcategorie (actual),API Subcategorie (actual),Aantal records
+Vloeren,PVC,Vloeren,PVC vloeren,2808
+,Laminaat,,Laminaat,273
+,Hout,,Houten vloeren,205
+,,,,
+Accessoires,Randafwerking,Accessoires,Plinten en profielen,341
+,Ondervloeren,,Ondervloeren,17
+,Onderhoudsmiddelen,,Onderhoudsmiddelen,28
+,Hulpmaterialen,,Legmaterialen,383
+,Gereedschappen,,Gereedschappen,0
+,Electro raamdecoratie,,Electro raamdecoratie,0
+,Gordijnen rail,,Gordijnen rail,0
+,Egaline & Lijmen,,Egaline & Lijmen,0
+,Overige,,Overige,0
+,,,,
+Gordijnen,Inbetween,Gordijnen,Inbetween,0
+,Overgordijnen,,Overgordijnen,0
+,Blackout,,Blackout,0
+,Dimout,,Dimout,0
+,,,,
+Zonwering (binnen),Jaloezie,Binnenzonwering,Jaloezie,2
+,Duette,,Duette,0
+,Plissé,,Plissé,0
+,Rolgordijnen,,Rolgordijnen,0
+,Shutter,,Shutter,0
+,Horren,,Horren,0
+,Geweven hout,,Geweven hout,0
+,,,,
+Diensten,Montage vloer,Dienst,Montage vloer,127
+,Verwijderen vloer,,Verwijderen vloer,23
+,Droogbouw,,Droogbouw,9
+,Ondergrond sanering,,Ondergrond sanering,0
+,Vloerverwarming,,Vloerverwarming,0
+,Montage reno trap,,Montage reno trap,21
+,Montage lijm pvc trap,,Montage lijm pvc trap,0
+,Montage gordijn,,Montage gordijn,0
+,Montage zonwering (binnen),,Montage zonwering,0
+,Montage shutter,,Montage shutter,0
+,,,,
+Traprenovatie,Reno trap,Traprenovatie,Reno trap,0
+,Lijm PVC trap,,Lijm PVC trap,0
+,,,,
+,,,,
+Datakwaliteit,,Aantal,Toelichting,
+Records zonder Subcategorie,,3455,Categorie_1 is leeg op deze records,
+Orphan: Legdienst vloerverwarming,,26,Verwijst naar een picklist-entry die niet meer bestaat — wellicht ooit migreren naar Vloerverwarming of een nieuwe waarde,
+Totaal records in Products,,7718,,
