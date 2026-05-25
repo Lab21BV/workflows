@@ -23,9 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               LAB<span className="accent">21</span> Workflows
             </a>
             <nav>
-              <a href="/werking">Werking</a>
               <a href="/todo/accountmanager">Accountmanager</a>
               <a href="/todo/inkoop-planning">Inkoop en Planning</a>
+              <a href="/werking">Werking</a>
               <a href="/architecture">Architecture</a>
               <a href="/docs">Specs</a>
               <a href="/api/status">/api/status</a>
