@@ -2,6 +2,7 @@ import { asc } from "drizzle-orm";
 import { db, schema } from "@/src/db";
 import { toggleActive, addDelegation, deleteDelegation } from "./actions";
 import { ManagerSelect } from "./_ManagerSelect";
+import { ActionButton } from "./_ActionButton";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -64,11 +65,12 @@ export default async function MedewerkersPage() {
                     )}
                   </td>
                   <td style={td}>
-                    <form action={async () => { "use server"; await toggleActive(e.id, !e.active); }}>
-                      <button type="submit" style={statusButtonStyle(e.active)}>
-                        {e.active ? "active" : "disabled"}
-                      </button>
-                    </form>
+                    <ActionButton
+                      action={async () => { await toggleActive(e.id, !e.active); }}
+                      style={statusButtonStyle(e.active)}
+                    >
+                      {e.active ? "active" : "disabled"}
+                    </ActionButton>
                   </td>
                   <td style={{ ...td, color: "var(--color-muted)", fontSize: 12 }}>{e.email}</td>
                 </tr>
@@ -140,9 +142,13 @@ export default async function MedewerkersPage() {
                   <td style={td}>{byId.get(d.toAmId)?.naam ?? d.toAmId}</td>
                   <td style={td}>{d.reason ?? "—"}</td>
                   <td style={td}>
-                    <form action={async () => { "use server"; await deleteDelegation(d.id); }}>
-                      <button type="submit" style={dangerButton}>verwijderen</button>
-                    </form>
+                    <ActionButton
+                      action={async () => { await deleteDelegation(d.id); }}
+                      style={dangerButton}
+                      confirmMessage="Delegatie verwijderen?"
+                    >
+                      verwijderen
+                    </ActionButton>
                   </td>
                 </tr>
               ))}

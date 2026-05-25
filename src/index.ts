@@ -1,6 +1,7 @@
 import { ZohoClient, RecordsApi } from "./zoho/index";
 import { getWorkflow } from "./workflows/registry";
-import type { WorkflowContext, WorkflowLogger } from "./workflows/types";
+import type { WorkflowContext, WorkflowLogger, WorkflowResult } from "./workflows/types";
+import { recordDecision } from "./lib/decision-log";
 
 const consoleLogger: WorkflowLogger = {
   info: (msg, meta) => console.log(JSON.stringify({ level: "info", msg, ...meta })),
@@ -20,7 +21,29 @@ export async function runWorkflow(id: string, input: unknown): Promise<unknown> 
     logger: consoleLogger,
   };
   const payload = wf.trigger.parse(input);
-  return wf.run(payload, ctx);
+
+  const startedAt = Date.now();
+  let result: WorkflowResult | null = null;
+  let error: Error | null = null;
+  try {
+    result = await wf.run(payload, ctx);
+    return result;
+  } catch (err) {
+    error = err as Error;
+    throw err;
+  } finally {
+    // Audit-log fire-and-forget. Schrijft naar Postgres `decision_log` en
+    // slikt eigen errors zodat de workflow-uitkomst nooit afhankelijk is
+    // van de audit-trail.
+    await recordDecision({
+      workflowId: id,
+      triggerName: wf.trigger.name,
+      payload,
+      result,
+      error,
+      durationMs: Date.now() - startedAt,
+    });
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
