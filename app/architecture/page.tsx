@@ -15,7 +15,7 @@ export default function ArchitecturePage() {
         canonical reference — read it at the start of any new working session.
       </p>
       <p style={{ color: "var(--muted)", fontSize: 12 }}>
-        Last reviewed: 2026-05-24 · Owner: Victor (XCX International) ·
+        Last reviewed: 2026-05-25 · Owner: Victor (XCX International) ·
         Decision status:{" "}
         <strong>evolving</strong> — Leaseweb mirror DB to be built; some
         operational details (sync failure handling, deployment topology,
@@ -354,6 +354,47 @@ export default function ArchitecturePage() {
           every replicated field per module with type and nullability;
           mark PII columns explicitly; record the foreign-key direction
           and on-delete behavior per relationship.
+        </p>
+      </div>
+
+      <h2>Employees &amp; order assignments</h2>
+      <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
+        <p style={{ color: "var(--fg)", marginTop: 0 }}>
+          <strong>LAB21 employees do not get Zoho seats.</strong> Sellers,
+          accountmanagers, and inkoop &amp; planning staff interact with
+          LAB21 exclusively through the custom apps (this app for AMs +
+          I&amp;P, the future <em>Lab21adviseurs</em> app for verkopers,
+          plus the shared configurators). Their identity lives in a
+          <strong> shared Postgres</strong> outside Zoho — same DB cluster
+          as the Leaseweb mirror, but a native, app-owned table (not
+          synced from Zoho).
+        </p>
+        <p style={{ color: "var(--fg)" }}>
+          <strong>Hierarchy = 1:1 + delegations.</strong> Each verkoper
+          has exactly one default accountmanager (<code>employees.manager_id</code>).
+          Vacation handoffs and other temporary coverage use a separate{" "}
+          <code>delegations</code> table with{" "}
+          <code>(from_am, to_am, valid_from, valid_until)</code>. No
+          many-to-many on product or vestiging — those are attributes,
+          not reporting lines.
+        </p>
+        <p style={{ color: "var(--fg)" }}>
+          <strong>Order → AM is a snapshot.</strong> When a verkoper
+          creates an order, the app resolves the effective AM (default
+          manager + any active delegation on that date) and writes
+          one row to <code>order_assignments(zoho_order_id, verkoper_id,
+          accountmanager_id, snapshotted_at)</code>. After that snapshot,
+          the order's AM never auto-moves — even if the verkoper switches
+          manager later. Zoho's own <code>Accountmanager</code> userlookup
+          field on Sales_Orders / Voorinspecties / etc. stays empty (or
+          points at an AI-agent system user); the app DB is the source
+          of truth for who owns what.
+        </p>
+        <p style={{ color: "var(--fg)" }}>
+          <strong>AI agents on the roadmap.</strong> Long-term the AM role
+          is automated by AI agents. The snapshot model + app-owned
+          assignment table mean that swap is a substitution of the
+          actor, not a schema change.
         </p>
       </div>
 
