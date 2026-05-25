@@ -30,7 +30,7 @@ Diensten,Montage vloer,Dienst,Montage vloer,127
 ,Verwijderen vloer,,Verwijderen vloer,23
 ,Droogbouw,,Droogbouw,9
 ,Ondergrond sanering,,Ondergrond sanering,0
-,Vloerverwarming,,Vloerverwarming,0
+,Vloerverwarming,,Vloerverwarming,26
 ,Montage reno trap,,Montage reno trap,21
 ,Montage lijm pvc trap,,Montage lijm pvc trap,0
 ,Montage gordijn,,Montage gordijn,0
@@ -43,5 +43,4 @@ Traprenovatie,Reno trap,Traprenovatie,Reno trap,0
 ,,,,
 Datakwaliteit,,Aantal,Toelichting,
 Records zonder Subcategorie,,3455,Categorie_1 is leeg op deze records,
-Orphan: Legdienst vloerverwarming,,26,Verwijst naar een picklist-entry die niet meer bestaat — wellicht ooit migreren naar Vloerverwarming of een nieuwe waarde,
 Totaal records in Products,,7718,,
