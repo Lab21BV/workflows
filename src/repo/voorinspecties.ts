@@ -2,7 +2,11 @@ import { ZohoClient } from "../zoho/client";
 import { RecordsApi } from "../zoho/records";
 import type { Outcome, VoorinspectieRecord } from "../workflows/vi-reschedule/types";
 
-const records = new RecordsApi(new ZohoClient());
+let _records: RecordsApi | null = null;
+function records(): RecordsApi {
+  if (!_records) _records = new RecordsApi(new ZohoClient());
+  return _records;
+}
 
 type RawVI = Record<string, unknown> & {
   id: string;
@@ -20,7 +24,7 @@ type RawVI = Record<string, unknown> & {
 };
 
 export async function get(id: string, leverdatumOrigineel: string): Promise<VoorinspectieRecord | null> {
-  const r = await records.get<RawVI>("Voorinspecties", id);
+  const r = await records().get<RawVI>("Voorinspecties", id);
   if (!r) return null;
   return {
     id: r.id,
@@ -41,12 +45,12 @@ export async function get(id: string, leverdatumOrigineel: string): Promise<Voor
 }
 
 export async function getSalesOrderId(id: string): Promise<string | null> {
-  const r = await records.get<RawVI>("Voorinspecties", id);
+  const r = await records().get<RawVI>("Voorinspecties", id);
   return r?.Verkooporders?.id ?? null;
 }
 
 export async function update(id: string, patch: Record<string, unknown>): Promise<void> {
-  await records.update("Voorinspecties", [{ id, ...patch }]);
+  await records().update("Voorinspecties", [{ id, ...patch }]);
 }
 
 export async function setBufferSnapshot(id: string, dagen: number): Promise<void> {

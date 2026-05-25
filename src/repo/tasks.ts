@@ -2,7 +2,12 @@ import { ZohoClient } from "../zoho/client";
 import { RecordsApi } from "../zoho/records";
 import type { Department } from "../workflows/vi-reschedule/types";
 
-const records = new RecordsApi(new ZohoClient());
+// Lazy init so module-load doesn't validate Zoho env (build-time / non-Zoho contexts).
+let _records: RecordsApi | null = null;
+function records(): RecordsApi {
+  if (!_records) _records = new RecordsApi(new ZohoClient());
+  return _records;
+}
 
 export type TaskRow = {
   id: string;
@@ -21,7 +26,7 @@ export async function createTodo(input: {
   voorinspectieId: string;
 }): Promise<string | null> {
   const due = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const res = await records.create("Tasks", [
+  const res = await records().create("Tasks", [
     {
       Subject: input.title,
       Description: input.body,
@@ -38,7 +43,7 @@ export async function createTodo(input: {
 export async function listOpen(department: Department): Promise<TaskRow[]> {
   // Zoho's search endpoint returns 204 No Content when there are no matches.
   // The shared ZohoClient converts that to `undefined`, so guard before reading `.data`.
-  const res = await records.search<TaskRow>("Tasks", {
+  const res = await records().search<TaskRow>("Tasks", {
     criteria: `(Department:equals:${department})and(Status:not_equal:Completed)`,
     perPage: 100,
   });
@@ -46,5 +51,5 @@ export async function listOpen(department: Department): Promise<TaskRow[]> {
 }
 
 export async function markResolved(id: string): Promise<void> {
-  await records.update("Tasks", [{ id, Status: "Completed" }]);
+  await records().update("Tasks", [{ id, Status: "Completed" }]);
 }

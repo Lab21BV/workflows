@@ -1,7 +1,11 @@
 import { ZohoClient } from "../zoho/client";
 import { RecordsApi } from "../zoho/records";
 
-const records = new RecordsApi(new ZohoClient());
+let _records: RecordsApi | null = null;
+function records(): RecordsApi {
+  if (!_records) _records = new RecordsApi(new ZohoClient());
+  return _records;
+}
 
 export type SalesOrderRow = {
   id: string;
@@ -29,7 +33,7 @@ type RawSO = {
  * reference is at `Product_Name.id`.
  */
 export async function get(id: string): Promise<SalesOrderRow | null> {
-  const r = await records.get<RawSO>("Sales_Orders", id);
+  const r = await records().get<RawSO>("Sales_Orders", id);
   if (!r) return null;
   const items = r.Ordered_Items ?? [];
   const productIds = items
@@ -43,5 +47,5 @@ export async function get(id: string): Promise<SalesOrderRow | null> {
 }
 
 export async function updateLeverdatum(id: string, nieuweDatum: string): Promise<void> {
-  await records.update("Sales_Orders", [{ id, Due_Date: nieuweDatum }]);
+  await records().update("Sales_Orders", [{ id, Due_Date: nieuweDatum }]);
 }
