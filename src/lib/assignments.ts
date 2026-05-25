@@ -61,6 +61,13 @@ export async function getEffectiveManagerFor(
  *
  * Roep dit aan op het moment dat een verkoper een nieuwe Sales_Order aanmaakt
  * in Zoho — geef de Zoho-order-id terug en deze functie bevriest de toewijzing.
+ *
+ * Concurrency-noot: tussen de SELECT op `existing` en de INSERT zit een venster
+ * waarin twee parallelle calls beiden de SELECT als leeg zien en beiden willen
+ * inserten. De UNIQUE-constraint op `zoho_order_id` (zie schema.ts) blokkeert
+ * de tweede insert met een error — die kan de caller retryen, wat dan de
+ * "existing" branch raakt. Voor LAB21-scale prima; bij hogere volumes
+ * wrap deze functie in een `db.transaction()` met `serializable` isolation.
  */
 export async function snapshotOrderAssignment(input: {
   zohoOrderId: string;

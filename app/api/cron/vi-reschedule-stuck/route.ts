@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runWorkflow } from "@/src/index";
+import { isCronAuthorized } from "@/src/lib/cron-auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-function isAuthorized(req: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) return true;
-  return req.headers.get("authorization") === `Bearer ${secret}`;
-}
-
 export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) {
+  if (!isCronAuthorized(req)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   try {

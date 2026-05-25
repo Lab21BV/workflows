@@ -1,6 +1,6 @@
 import { ZohoClient } from "../zoho/client";
 import { RecordsApi } from "../zoho/records";
-import type { Outcome, VoorinspectieRecord } from "../workflows/vi-reschedule/types";
+import type { VoorinspectieRecord } from "../workflows/vi-reschedule/types";
 
 let _records: RecordsApi | null = null;
 function records(): RecordsApi {
@@ -53,15 +53,3 @@ export async function update(id: string, patch: Record<string, unknown>): Promis
   await records().update("Voorinspecties", [{ id, ...patch }]);
 }
 
-export async function setBufferSnapshot(id: string, dagen: number): Promise<void> {
-  await update(id, { VI_Buffer_Snapshot_Dagen: dagen });
-}
-
-export function outcomesToPatch(outcomes: Outcome[]): Record<string, unknown> {
-  const patch: Record<string, unknown> = {};
-  for (const o of outcomes) {
-    if (o.kind === "set_status") patch.VI_Voorstel_Status = o.status;
-    if (o.kind === "commit_vi_datetime") patch.Datum_tijd = o.datetime;
-  }
-  return patch;
-}
