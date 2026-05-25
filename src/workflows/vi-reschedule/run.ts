@@ -3,8 +3,17 @@ import { z } from "zod";
 import type { Workflow, WorkflowContext, WorkflowResult } from "../types";
 import type { Department, Outcome, VoorinspectieRecord } from "./types";
 import { evaluateReschedule } from "./evaluate";
-// No repo imports at module level — all repo modules call new ZohoClient() at init.
-// outcomesToPatch is inlined here to avoid that side-effect.
+import * as viRepo from "../../repo/voorinspecties";
+import * as soRepo from "../../repo/sales-orders";
+import * as prRepo from "../../repo/products";
+import * as tlRepo from "../../repo/tijdlijn";
+import * as taRepo from "../../repo/tasks";
+
+/**
+ * Collapse outcomes naar het ene Voorinspectie-patch object.
+ * Andere outcomes (update_leverdatum, log_tijdlijn, create_todo) gaan via
+ * aparte repo-calls — die hebben hun eigen module-record nodig.
+ */
 function outcomesToPatch(outcomes: Outcome[]): Record<string, unknown> {
   const patch: Record<string, unknown> = {};
   for (const o of outcomes) {
@@ -19,7 +28,19 @@ const payloadSchema = z.object({
 });
 type Payload = z.infer<typeof payloadSchema>;
 
-// Repo interface used by runReschedule — allows test injection.
+/**
+ * Domeingerichte repo-interface bovenop de raw RecordsApi.
+ *
+ * Waarom een eigen `Repos` voor vi-reschedule en niet ctx.records?
+ * Deze workflow leest uit 5 Zoho-modules (Voorinspecties, Sales_Orders,
+ * Products, Datums_2 voor tijdlijn, Tasks voor todo) met domein-specifieke
+ * transformaties (VoorinspectieRecord-shape, productIds extractie, etc.).
+ * De interface vangt die abstractie zodat tests mock-implementaties kunnen
+ * leveren zonder de hele RecordsApi te hoeven mocken.
+ *
+ * Andere workflows hebben dit niet nodig — die werken direct op één module
+ * via `ctx.records.search/update`. Bewust geen valse uniformiteit.
+ */
 export interface Repos {
   getVi: (id: string, leverdatumOrigineel: string) => Promise<VoorinspectieRecord | null>;
   getSalesOrderId: (id: string) => Promise<string | null>;
@@ -32,35 +53,22 @@ export interface Repos {
   notifyPortalUser: (who: string, template: string, vi: VoorinspectieRecord) => Promise<void>;
 }
 
-// Production repos are loaded lazily to avoid ZohoClient initialisation at import time.
-function makeProductionRepos(): Repos {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const vi = require("../../repo/voorinspecties") as typeof import("../../repo/voorinspecties");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const so = require("../../repo/sales-orders") as typeof import("../../repo/sales-orders");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const pr = require("../../repo/products") as typeof import("../../repo/products");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const tl = require("../../repo/tijdlijn") as typeof import("../../repo/tijdlijn");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const ta = require("../../repo/tasks") as typeof import("../../repo/tasks");
-  return {
-    getVi: vi.get,
-    getSalesOrderId: vi.getSalesOrderId,
-    getSalesOrder: so.get,
-    getProducts: pr.getMany,
-    updateVi: vi.update,
-    updateLeverdatum: so.updateLeverdatum,
-    logEvent: tl.logEvent,
-    createTodo: ta.createTodo,
-    // Stub for now — real portal-user notifications wired in a follow-up.
-    notifyPortalUser: async () => {},
-  };
-}
+const productionRepos: Repos = {
+  getVi: viRepo.get,
+  getSalesOrderId: viRepo.getSalesOrderId,
+  getSalesOrder: soRepo.get,
+  getProducts: prRepo.getMany,
+  updateVi: viRepo.update,
+  updateLeverdatum: soRepo.updateLeverdatum,
+  logEvent: tlRepo.logEvent,
+  createTodo: taRepo.createTodo,
+  // Stub for now — real portal-user notifications wired in a follow-up.
+  notifyPortalUser: async () => {},
+};
 
 export async function runReschedule(
   payload: Payload,
-  repos: Repos = makeProductionRepos(),
+  repos: Repos = productionRepos,
 ): Promise<{ outcomes: Outcome[] }> {
   const soId = await repos.getSalesOrderId(payload.voorinspectieId);
   if (!soId) return { outcomes: [] };
