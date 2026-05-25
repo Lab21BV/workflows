@@ -1,6 +1,7 @@
-import { asc, eq } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 import { db, schema } from "@/src/db";
-import { setManager, toggleActive, addDelegation, deleteDelegation } from "./actions";
+import { toggleActive, addDelegation, deleteDelegation } from "./actions";
+import { ManagerSelect } from "./_ManagerSelect";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -53,21 +54,11 @@ export default async function MedewerkersPage() {
                   <td style={td}>{e.vestiging ?? "—"}</td>
                   <td style={td}>
                     {isVerkoper ? (
-                      <form action={async (fd) => { "use server"; await setManager(e.id, String(fd.get("manager_id")) || null); }}>
-                        <select
-                          name="manager_id"
-                          defaultValue={e.managerId ?? ""}
-                          onChange={(ev) => (ev.currentTarget.form as HTMLFormElement).requestSubmit()}
-                          style={selectStyle}
-                        >
-                          <option value="">— geen —</option>
-                          {accountmanagers.map((am) => (
-                            <option key={am.id} value={am.id}>
-                              {am.naam} {am.active ? "" : "(disabled)"}
-                            </option>
-                          ))}
-                        </select>
-                      </form>
+                      <ManagerSelect
+                        employeeId={e.id}
+                        currentManagerId={e.managerId}
+                        options={accountmanagers.map((am) => ({ id: am.id, naam: am.naam, active: am.active }))}
+                      />
                     ) : (
                       <span style={{ color: "var(--color-muted)" }}>{mgrName}</span>
                     )}
