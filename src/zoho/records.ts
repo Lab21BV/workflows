@@ -54,16 +54,24 @@ export class RecordsApi {
     module: ModuleKey,
     opts: SearchOptions,
   ): Promise<ListResponse<T>> {
-    return this.client.request<ListResponse<T>>(`/${module}/search`, {
-      query: {
-        criteria: opts.criteria,
-        email: opts.email,
-        phone: opts.phone,
-        word: opts.word,
-        page: opts.page,
-        per_page: opts.perPage,
+    // Zoho's search endpoint returns 204 No Content when there are zero
+    // matches; ZohoClient.request() turns that into `undefined`. We
+    // normalize naar een lege ListResponse zodat callers altijd
+    // `.data.length === 0` kunnen schrijven — geen optional-chaining trap.
+    const res = await this.client.request<ListResponse<T> | undefined>(
+      `/${module}/search`,
+      {
+        query: {
+          criteria: opts.criteria,
+          email: opts.email,
+          phone: opts.phone,
+          word: opts.word,
+          page: opts.page,
+          per_page: opts.perPage,
+        },
       },
-    });
+    );
+    return res ?? { data: [] };
   }
 
   async create<T extends Record<string, unknown>>(

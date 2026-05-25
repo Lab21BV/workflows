@@ -1,13 +1,6 @@
-import { ZohoClient } from "../zoho/client";
-import { RecordsApi } from "../zoho/records";
+import { getRecordsApi as records } from "../zoho";
 import { departmentSchema, type Department } from "../lib/departments";
 
-// Lazy init so module-load doesn't validate Zoho env (build-time / non-Zoho contexts).
-let _records: RecordsApi | null = null;
-function records(): RecordsApi {
-  if (!_records) _records = new RecordsApi(new ZohoClient());
-  return _records;
-}
 
 export type TaskRow = {
   id: string;

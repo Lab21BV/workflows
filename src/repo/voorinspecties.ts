@@ -1,12 +1,6 @@
-import { ZohoClient } from "../zoho/client";
-import { RecordsApi } from "../zoho/records";
+import { getRecordsApi as records } from "../zoho";
 import type { VoorinspectieRecord } from "../workflows/vi-reschedule/types";
 
-let _records: RecordsApi | null = null;
-function records(): RecordsApi {
-  if (!_records) _records = new RecordsApi(new ZohoClient());
-  return _records;
-}
 
 type RawVI = Record<string, unknown> & {
   id: string;

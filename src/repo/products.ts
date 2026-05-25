@@ -1,11 +1,5 @@
-import { ZohoClient } from "../zoho/client";
-import { RecordsApi } from "../zoho/records";
+import { getRecordsApi as records } from "../zoho";
 
-let _records: RecordsApi | null = null;
-function records(): RecordsApi {
-  if (!_records) _records = new RecordsApi(new ZohoClient());
-  return _records;
-}
 
 export type ProductRow = { id: string; Levertijd: number };
 
