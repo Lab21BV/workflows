@@ -19,6 +19,7 @@ export const SUBCATEGORIE_ACTUAL_VALUE_OVERRIDES: Record<string, string> = {
   Randafwerking: "Plinten en profielen",
   Hulpmaterialen: "Legmaterialen",
   Montage: "Legdienst vloeren",
+  "Montage zonwering (binnen)": "Montage zonwering",
 };
 
 /**
