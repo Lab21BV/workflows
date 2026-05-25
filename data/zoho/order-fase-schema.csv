@@ -1,0 +1,36 @@
+Order fase,Fase VI,API actual (Order fase),API actual (Fase VI),Bron,In Zoho picklist?
+Aangemaakt,,Created,,Zoho,Ja
+Wacht op aanbetaling,,Wacht op aanbetaling,,Zoho,Ja
+Aanbetaling ontvangen,,Aanbetaling ontvangen,,Zoho,Ja
+Goedgekeurd,,Approved,,Zoho,Ja
+Salescontrol uitvoeren,,Salescontrol uitvoeren,,Zoho,Ja
+Salescontrol uitgevoerd,,Salescontrol uitgevoerd,,Zoho,Ja
+Tijdlijn controle uitvoeren,,Perform timecontrol,,Zoho,Ja
+Tijdlijn controle uitgevoerd,,Timecontrol completed,,Zoho,Ja
+Gereserveerd,,Gereserveerd,,King,Ja
+Leverancier toewijzen,,Order verwerken,,Zoho,Ja
+,Aangemaakt,,Legger toewijzen,Zoho,Ja
+,Gepland,,Datum plannen,Zoho,Ja
+,Uitgevoerd,,VI uitgevoerd,Zoho,Ja
+,Gecheckt,,Wachten op uitvoering,Zoho,Ja
+,Meerprijs,,Meerprijs,Zoho,Ja
+,Akkoord,,Akkoord klant VI,Zoho,Ja
+VI gepland,,VI gepland,,Zoho,Ja
+VI uitgevoerd,,VI uitgevoerd,,Zoho,Ja
+VI akkoord,,VI akkoord,,Zoho,Ja
+Besteld,,—,,King,Nee — bestaat alleen in King
+Alle goederen ontvangen,,—,,King,Nee — bestaat alleen in King
+Compleet betaald,,—,,King,Nee — bestaat alleen in King
+Vrijgegeven voor verzamellijst,,Vrijgegeven voor verzamellijst,,King,Ja
+Verzamellijst afgedrukt,,Verzamellijst afgedrukt,,King,Ja
+Verzamellijst verwerkt,,Verzamellijst verwerkt,,King,Ja
+Vrijgegeven voor levering,,Vrijgegeven voor levering,,King,Ja
+Afgeleverd,,Delivered,,King,Ja
+Vrijgegeven voor facturering,,Vrijgegeven voor facturering,,King,Ja
+Geannuleerd,,Cancelled,,Zoho,Ja
+,,,,,
+LET OP,,,,,
+"Sales_Orders.Status (Fase) heeft 20 waardes in Zoho. ""Besteld"", ""Alle goederen ontvangen"", ""Compleet betaald"" zijn business-fasen die in King leven en niet in de Zoho-picklist staan.",,,,,
+"Voorinspecties.Status heeft 28 waardes in Zoho. De 6 hier getoonde zijn de hoofdfasen die in jouw schema staan; de andere 22 zijn fijnmaziger (Datum afgesproken, Wachten op bevestiging, Legger akkoord, etc.).",,,,,
+"Zoho display ""Meer prijs"" met spatie bestaat niet — Zoho gebruikt ""Meerprijs"" (één woord).",,,,,
+"Status_King is een apart veld in Sales_Orders maar heeft 0 picklist-waardes. King-state komt dus elders binnen (sync-veld of integratie).",,,,,
