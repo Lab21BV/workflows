@@ -1,4 +1,5 @@
 import { PROCESSES } from "@/src/processes";
+import { WORKFLOWS } from "@/src/workflows/registry";
 
 export const dynamic = "force-static";
 
@@ -6,6 +7,8 @@ export default function ProcessenIndex() {
   const list = Object.values(PROCESSES);
   const webhooks = list.filter((p) => p.kind === "webhook");
   const crons = list.filter((p) => p.kind === "cron");
+  const liveIds = new Set(Object.keys(WORKFLOWS));
+  const liveCount = list.filter((p) => liveIds.has(p.id)).length;
   return (
     <>
       <h1>Processen</h1>
@@ -18,8 +21,8 @@ export default function ProcessenIndex() {
           <strong>📱 Op deze portal — LAB21 Operations app</strong>
           <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>
             Beslislogica die in code draait (deze app). Stateless re-evaluatie
-            getriggerd door Zoho-webhooks of door dagelijkse crons. {list.length}{" "}
-            processen — zie hieronder.
+            getriggerd door Zoho-webhooks of door dagelijkse crons. {liveCount}{" "}
+            van {list.length} processen zijn live geregistreerd in de workflow-registry.
           </p>
         </div>
         <a
@@ -45,9 +48,20 @@ export default function ProcessenIndex() {
             className="card"
             style={{ textDecoration: "none", color: "var(--fg)" }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, gap: 6 }}>
               <code>{p.id}</code>
-              <span className="badge webhook">webhook</span>
+              <span style={{ display: "flex", gap: 6 }}>
+                {liveIds.has(p.id) ? (
+                  <span className="badge" style={{ background: "var(--accent)", color: "white" }}>
+                    live
+                  </span>
+                ) : (
+                  <span className="badge" style={{ background: "var(--muted)", color: "white" }}>
+                    planned
+                  </span>
+                )}
+                <span className="badge webhook">webhook</span>
+              </span>
             </div>
             <strong>{p.title}</strong>
             <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>{p.summary}</p>
@@ -69,9 +83,20 @@ export default function ProcessenIndex() {
             className="card"
             style={{ textDecoration: "none", color: "var(--fg)" }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, gap: 6 }}>
               <code>{p.id}</code>
-              <span className="badge cron">cron</span>
+              <span style={{ display: "flex", gap: 6 }}>
+                {liveIds.has(p.id) ? (
+                  <span className="badge" style={{ background: "var(--accent)", color: "white" }}>
+                    live
+                  </span>
+                ) : (
+                  <span className="badge" style={{ background: "var(--muted)", color: "white" }}>
+                    planned
+                  </span>
+                )}
+                <span className="badge cron">cron</span>
+              </span>
             </div>
             <strong>{p.title}</strong>
             <p style={{ color: "var(--muted)", margin: "6px 0 0", fontSize: 13 }}>{p.summary}</p>

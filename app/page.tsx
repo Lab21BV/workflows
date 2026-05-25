@@ -48,6 +48,8 @@ export default function HomePage() {
       <h2>Cron schedules (UTC)</h2>
       <div className="card">
         <dl className="kv">
+          <dt>07:00 daily</dt>
+          <dd>/api/cron/vi-reschedule-stuck</dd>
           <dt>08:00 daily</dt>
           <dd>/api/cron/showroom-review-followup</dd>
           <dt>08:30 daily</dt>

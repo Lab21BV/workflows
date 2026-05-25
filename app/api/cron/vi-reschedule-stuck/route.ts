@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ZohoClient, RecordsApi } from "@/src/zoho";
-import { runReschedule } from "@/src/workflows/vi-reschedule/run";
+import { runWorkflow } from "@/src/index";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-
-// Terminal statuses we want to exclude (rest = "in flight" → reconcile).
-const TERMINAL = ["done", "rejected", "none"];
 
 function isAuthorized(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;
@@ -18,23 +14,11 @@ export async function GET(req: NextRequest) {
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
-
-  const records = new RecordsApi(new ZohoClient());
-  const stale = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  // Zoho search criteria doesn't support :in:; chain :not_equal:.
-  const notTerminal = TERMINAL.map((s) => `(VI_Voorstel_Status:not_equal:${s})`).join("and");
-  const criteria = `${notTerminal}and(Modified_Time:before:${stale})`;
-  const res = await records.search<{ id: string }>("Voorinspecties", { criteria, perPage: 50 });
-
-  const results: { id: string; outcomes: number }[] = [];
-  for (const r of res.data) {
-    try {
-      const out = await runReschedule({ voorinspectieId: r.id });
-      results.push({ id: r.id, outcomes: out.outcomes.length });
-    } catch (err) {
-      console.error("vi-reschedule-stuck reconciliation failed", r.id, err);
-    }
+  try {
+    const result = await runWorkflow("vi-reschedule-stuck", { staleHours: 24 });
+    return NextResponse.json(result as object);
+  } catch (err) {
+    console.error("vi-reschedule-stuck cron error", err);
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
-
-  return NextResponse.json({ checked: res.data.length, processed: results });
 }
