@@ -1,0 +1,149 @@
+{
+  "note": "Backup of Products.Product_Category picklist after accidental DELETE of global picklist Categorie_n. Field is no longer linked to global picklist (global_picklist: null) but values remain inline.",
+  "taken_at": "2026-05-25",
+  "field_api_name": "Product_Category",
+  "field_label": "Hoofdcategorie",
+  "data_type": "picklist",
+  "global_picklist_was": {
+    "api_name": "Categorie_n",
+    "id": "728921000000768949"
+  },
+  "global_picklist_now": null,
+  "pick_list_values": [
+    {
+      "display_value": "-None-",
+      "sequence_number": 1,
+      "reference_value": "-None-",
+      "colour_code": null,
+      "actual_value": "-None-",
+      "id": "728921000000002583",
+      "type": "used"
+    },
+    {
+      "display_value": "Vloeren",
+      "sequence_number": 2,
+      "reference_value": "Vloeren",
+      "colour_code": null,
+      "actual_value": "Vloeren",
+      "id": "728921000000599752",
+      "type": "used"
+    },
+    {
+      "display_value": "Gordijnen",
+      "sequence_number": 3,
+      "reference_value": "Gordijnen",
+      "colour_code": null,
+      "actual_value": "Gordijnen",
+      "id": "728921000018714072",
+      "type": "used"
+    },
+    {
+      "display_value": "Zonwering (binnen)",
+      "sequence_number": 4,
+      "reference_value": "Binnenzonwering",
+      "colour_code": null,
+      "actual_value": "Binnenzonwering",
+      "id": "728921000018714060",
+      "type": "used"
+    },
+    {
+      "display_value": "Shutters",
+      "sequence_number": 5,
+      "reference_value": "Shutter",
+      "colour_code": null,
+      "actual_value": "Shutter",
+      "id": "728921000018714066",
+      "type": "used"
+    },
+    {
+      "display_value": "Traprenovatie",
+      "sequence_number": 6,
+      "reference_value": "Traprenovatie",
+      "colour_code": null,
+      "actual_value": "Traprenovatie",
+      "id": "728921000000599753",
+      "type": "used"
+    },
+    {
+      "display_value": "Wandpanelen",
+      "sequence_number": 7,
+      "reference_value": "Wandpanelen",
+      "colour_code": null,
+      "actual_value": "Lattenwand",
+      "id": "728921000000469212",
+      "type": "used"
+    },
+    {
+      "display_value": "Accessoires",
+      "sequence_number": 8,
+      "reference_value": "Accessoires",
+      "colour_code": null,
+      "actual_value": "Accessoires",
+      "id": "728921000000827531",
+      "type": "used"
+    },
+    {
+      "display_value": "Diensten",
+      "sequence_number": 9,
+      "reference_value": "Dienst",
+      "colour_code": null,
+      "actual_value": "Dienst",
+      "id": "728921000000827533",
+      "type": "used"
+    },
+    {
+      "display_value": "Raamdecoratie",
+      "sequence_number": 10,
+      "reference_value": "Raamdecoratie",
+      "colour_code": null,
+      "actual_value": "Raamdecoratie",
+      "id": "728921000000827527",
+      "type": "unused"
+    },
+    {
+      "display_value": "Ondergrond",
+      "sequence_number": 11,
+      "reference_value": "Ondergrond",
+      "colour_code": null,
+      "actual_value": "Ondergrond",
+      "id": "728921000000827529",
+      "type": "unused"
+    },
+    {
+      "display_value": "Vloerverwarming",
+      "sequence_number": 12,
+      "reference_value": "Vloerverwarming",
+      "colour_code": null,
+      "actual_value": "Vloerverwarming",
+      "id": "728921000000599754",
+      "type": "unused"
+    },
+    {
+      "display_value": "Vloer",
+      "sequence_number": 13,
+      "reference_value": "Hardware",
+      "colour_code": null,
+      "actual_value": "Hardware1",
+      "id": "728921000000768976",
+      "type": "unused"
+    },
+    {
+      "display_value": "Vitrage",
+      "sequence_number": 14,
+      "reference_value": "CRM systemen",
+      "colour_code": null,
+      "actual_value": "CRM Applications",
+      "id": "728921000000002589",
+      "type": "unused"
+    },
+    {
+      "display_value": "Legartikel",
+      "sequence_number": 15,
+      "reference_value": "Software",
+      "colour_code": null,
+      "actual_value": "Software",
+      "id": "728921000000002587",
+      "type": "unused"
+    }
+  ]
+}
