@@ -1,6 +1,6 @@
 import { ZohoClient } from "../zoho/client";
 import { RecordsApi } from "../zoho/records";
-import type { Department } from "../workflows/vi-reschedule/types";
+import type { Department } from "../lib/departments";
 
 // Lazy init so module-load doesn't validate Zoho env (build-time / non-Zoho contexts).
 let _records: RecordsApi | null = null;

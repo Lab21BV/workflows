@@ -63,11 +63,14 @@ export default function ArchitecturePage() {
             workflows.
           </li>
           <li>
-            <strong>Every app keeps Zoho access inside one thin file</strong>{" "}
-            (<code>src/repo/zoho.ts</code> or equivalent). The end-state
-            swap turns this into <code>src/repo/db.ts</code> against
-            Leaseweb Postgres — Zoho stays only as the throughput layer
-            into King.
+            <strong>Every app keeps Zoho access behind a thin per-module
+            repo layer</strong>{" "}
+            (<code>src/repo/*.ts</code> — one file per Zoho module:
+            tasks, voorinspecties, products, sales-orders, tijdlijn).
+            Workflows never call the Zoho HTTP client directly; they go
+            through repos. The end-state swap turns each repo into its
+            Leaseweb-Postgres equivalent — Zoho stays only as the
+            throughput layer into King.
           </li>
           <li>
             <strong>Workflow chaining is solved by stateless re-evaluation.</strong>{" "}

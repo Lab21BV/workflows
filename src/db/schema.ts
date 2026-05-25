@@ -3,6 +3,8 @@ import {
   uuid,
   text,
   boolean,
+  integer,
+  jsonb,
   timestamp,
   date,
   index,
@@ -77,9 +79,46 @@ export const orderAssignments = pgTable(
   }),
 );
 
+/**
+ * decision_log — audit-trail van elke workflow-invocatie.
+ *
+ * Eén rij per orchestrator-run. Beantwoordt vragen als "welke webhook
+ * leidde tot deze status-wijziging?" en "hoe vaak draaide deze workflow
+ * vorige week?". Append-only — nooit updaten of verwijderen.
+ *
+ * Voor LAB21 nog niet bedraad in de workflow-dispatcher (`src/index.ts`);
+ * tabel staat klaar zodat Lab21adviseurs + AI-agents straks meteen kunnen
+ * loggen.
+ */
+export const decisionLog = pgTable(
+  "decision_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workflowId: text("workflow_id").notNull(),
+    triggerName: text("trigger_name").notNull(),
+    /** Hash van payload — voor idempotency-checks en deduplication. */
+    inputHash: text("input_hash").notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+    outcomes: jsonb("outcomes").$type<unknown[]>(),
+    /** 'ok' | 'skipped' | 'error' — komt direct uit WorkflowResult.status. */
+    status: text("status").notNull(),
+    message: text("message"),
+    error: text("error"),
+    durationMs: integer("duration_ms"),
+    firedAt: timestamp("fired_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    workflowIdx: index("decision_log_workflow_idx").on(t.workflowId, t.firedAt),
+    hashIdx: index("decision_log_hash_idx").on(t.inputHash),
+    statusIdx: index("decision_log_status_idx").on(t.status),
+  }),
+);
+
 export type Employee = typeof employees.$inferSelect;
 export type NewEmployee = typeof employees.$inferInsert;
 export type Delegation = typeof delegations.$inferSelect;
 export type NewDelegation = typeof delegations.$inferInsert;
 export type OrderAssignment = typeof orderAssignments.$inferSelect;
 export type NewOrderAssignment = typeof orderAssignments.$inferInsert;
+export type DecisionLogEntry = typeof decisionLog.$inferSelect;
+export type NewDecisionLogEntry = typeof decisionLog.$inferInsert;

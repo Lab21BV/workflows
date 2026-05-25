@@ -41,11 +41,13 @@ describe("runReschedule", () => {
           updates.push({ id, patch });
         }),
         updateLeverdatum: vi.fn(),
-        logEvent: vi.fn(async (_id, e) => {
+        logEvent: vi.fn(async (_id, e): Promise<string | null> => {
           logs.push(e);
+          return null;
         }),
-        createTodo: vi.fn(async (i) => {
+        createTodo: vi.fn(async (i): Promise<string | null> => {
           todos.push({ dep: i.department, title: i.title });
+          return null;
         }),
         notifyPortalUser: vi.fn(),
       },

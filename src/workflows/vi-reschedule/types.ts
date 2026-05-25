@@ -1,7 +1,9 @@
 // src/workflows/vi-reschedule/types.ts
 
+import type { Department } from "../../lib/departments";
+
 export type Aanvrager = "aannemer" | "klant";
-export type Department = "accountmanager" | "inkoop_planning";
+export type { Department }; // re-export voor back-compat
 
 export type VoorstelStatus =
   | "none"
