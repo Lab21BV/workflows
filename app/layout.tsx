@@ -26,8 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a href="/">Dashboard</a>
               <a href="/processen">Processen</a>
               <a href="/tijdlijn">Tijdlijn</a>
-              <a href="/todo/accountmanager">Todo: AM</a>
-              <a href="/todo/inkoop-planning">Todo: I&amp;P</a>
+              <a href="/todo/accountmanager">Accountmanager</a>
+              <a href="/todo/inkoop-planning">Inkoop en Planning</a>
               <a href="/architecture">Architecture</a>
               <a href="/docs">Specs</a>
               <a href="/api/status">/api/status</a>
