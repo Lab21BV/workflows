@@ -15,12 +15,14 @@ export default function ArchitecturePage() {
         canonical reference — read it at the start of any new working session.
       </p>
       <p style={{ color: "var(--muted)", fontSize: 12 }}>
-        Last reviewed: 2026-05-25 · Owner: Victor (XCX International) ·
+        Last reviewed: 2026-05-26 · Owner: Victor (XCX International) ·
         Decision status:{" "}
         <strong>evolving</strong> — Leaseweb mirror DB to be built; some
         operational details (sync failure handling, deployment topology,
         observability) are still open. Locks back in once the mirror is
-        in production.
+        in production. Latest additions (2026-05-26): cross-cutting{" "}
+        <a href="/docs/2026-05-26-chat-auth-ops-architecture">chat service + self-hosted identity (Zitadel)</a>{" "}
+        and the ops model with Claude Code as routine-executor.
       </p>
 
       <h2>The system in one paragraph</h2>
@@ -270,6 +272,85 @@ export default function ArchitecturePage() {
         </table>
       </div>
 
+      <h2>Cross-cutting services</h2>
+      <div className="card">
+        <p style={{ color: "var(--fg)" }}>
+          Two services sit <strong>beside</strong> the portals in the
+          presentation layer — used by all of them, owned by none. They are
+          not portals (no subdomain logic, no decision-making) and they are
+          not the orchestrator (LAB21 Operations owns cross-app decisions).
+          They are infrastructure that every consumer leans on. Full
+          rationale and trade-offs:{" "}
+          <a href="/docs/2026-05-26-chat-auth-ops-architecture">chat, identity & ops architecture spec</a>.
+        </p>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--border)" }}>
+              <th style={th}>Service</th>
+              <th style={th}>Role</th>
+              <th style={th}>State ownership</th>
+              <th style={th}>Status</th>
+              <th style={th}>Repo / host</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style={tr}>
+              <td style={td}><strong>Chat Service</strong></td>
+              <td style={td}>
+                Rocket.Chat + Jitsi + Whisper. Rooms hang on Zoho records
+                (deterministic <code>order-{`{id}`}</code> /{" "}
+                <code>vi-{`{id}`}</code> names). Portals embed the widget;
+                no separate chat site for end users. Whisper transcripts
+                give searchable bewijs.
+              </td>
+              <td style={td}>
+                Owns its own DB (messages, threads, calls, transcripts).
+                Does <em>not</em> sync to Zoho. Webhooks LAB21 Operations
+                only when a chat event has business meaning (e.g.
+                transcript flags "annuleren").
+              </td>
+              <td style={td}>To be built</td>
+              <td style={td}>
+                <a href="https://github.com/Lab21BV/chat">
+                  Lab21BV/chat
+                </a>
+              </td>
+            </tr>
+            <tr style={tr}>
+              <td style={td}><strong>Identity Provider (Zitadel)</strong></td>
+              <td style={td}>
+                Issues OIDC tokens to portals, chat, and LAB21 Operations.
+                Single sign-on across the ecosystem. Self-hosted on
+                Leaseweb (separate VM from the mirror cluster) for data
+                sovereignty.
+              </td>
+              <td style={td}>
+                Owns its own Postgres (users, sessions, MFA secrets,
+                signing keys). Mapping from a Zitadel user to a Zoho
+                record lives in a{" "}
+                <code>chat_user_mapping</code> table in the mirror DB,
+                not in Zitadel or Zoho.
+              </td>
+              <td style={td}>Planned</td>
+              <td style={td}>
+                Self-hosted; runbook at{" "}
+                <code>docs/ops/zitadel-runbook.md</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p style={{ color: "var(--muted)", marginTop: 8, fontSize: 12 }}>
+          <strong>Ops model.</strong> The accountable owner stays human.
+          Claude Code is the executor for routine work (patching, backup
+          verification, restore drills) and first responder for incidents,
+          but not the alerting layer — that is an external service
+          (Better Stack / Healthchecks.io). See{" "}
+          <code>docs/ops/scheduled-health-checks.md</code> for the
+          three-ring model (external alerting → Claude routines →
+          on-demand investigation).
+        </p>
+      </div>
+
       <h2>Canonical entities</h2>
       <div className="card">
         <p style={{ color: "var(--fg)" }}>
@@ -422,12 +503,17 @@ export default function ArchitecturePage() {
             whole department bucket.
           </li>
           <li>
-            <strong>Auth layer.</strong> Magic-link or SSO via the
-            company-email tenant so the app knows{" "}
-            <em>which</em> employee is signed in. Until then we run with
-            a single admin context. Decision on provider (Clerk /
-            Stack / Vercel-native / custom) lives with the
-            Lab21adviseurs build because that app needs auth first.
+            <strong>Auth layer — provider decided (2026-05-26).</strong>{" "}
+            Self-hosted <strong>Zitadel</strong> on Leaseweb, shared across
+            all portals, chat, and LAB21 Operations. Until installed we
+            still run with a single admin context. The employees table
+            stays the source of truth for <em>who works where</em>;
+            Zitadel becomes the source of truth for <em>who is logged
+            in</em>, linked via a{" "}
+            <code>chat_user_mapping</code> table in the mirror DB. See
+            the{" "}
+            <a href="/docs/2026-05-26-chat-auth-ops-architecture">chat, identity &amp; ops spec</a>{" "}
+            for full reasoning.
           </li>
         </ul>
       </div>
