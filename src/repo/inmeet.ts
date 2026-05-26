@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db, schema } from "../db";
 import { getRecordsApi as records } from "../zoho";
 import {
@@ -8,13 +8,35 @@ import {
 
 const DATUMS_CODE = "INMEET-VLOERVERWARMING";
 
+export type SubmissionStatus = "submitted" | "am_approved" | "am_rejected";
+
 export type StoredSubmission = {
   id: string;
   zohoOrderId: string;
   payload: InmeetForm;
   zohoDatumsId: string | null;
+  status: SubmissionStatus;
+  amNotitie: string | null;
+  amCheckedBy: string | null;
+  amCheckedAt: Date | null;
+  aannemerId: string | null;
   submittedAt: Date;
 };
+
+function rowToSubmission(r: typeof schema.inmeetSubmissions.$inferSelect): StoredSubmission {
+  return {
+    id: r.id,
+    zohoOrderId: r.zohoOrderId,
+    payload: r.payload as InmeetForm,
+    zohoDatumsId: r.zohoDatumsId,
+    status: r.status as SubmissionStatus,
+    amNotitie: r.amNotitie,
+    amCheckedBy: r.amCheckedBy,
+    amCheckedAt: r.amCheckedAt,
+    aannemerId: r.aannemerId,
+    submittedAt: r.submittedAt,
+  };
+}
 
 /**
  * Slaat een inmeetformulier op in Postgres en pusht een samenvatting
@@ -70,11 +92,57 @@ export async function listForOrder(zohoOrderId: string): Promise<StoredSubmissio
     .from(schema.inmeetSubmissions)
     .where(eq(schema.inmeetSubmissions.zohoOrderId, zohoOrderId))
     .orderBy(desc(schema.inmeetSubmissions.submittedAt));
-  return rows.map((r) => ({
-    id: r.id,
-    zohoOrderId: r.zohoOrderId,
-    payload: r.payload as InmeetForm,
-    zohoDatumsId: r.zohoDatumsId,
-    submittedAt: r.submittedAt,
-  }));
+  return rows.map(rowToSubmission);
+}
+
+/** Open inmeetformulieren die nog wachten op AM-controle. */
+export async function listPendingAmCheck(): Promise<StoredSubmission[]> {
+  const rows = await db
+    .select()
+    .from(schema.inmeetSubmissions)
+    .where(eq(schema.inmeetSubmissions.status, "submitted"))
+    .orderBy(desc(schema.inmeetSubmissions.submittedAt));
+  return rows.map(rowToSubmission);
+}
+
+/** AM-goedgekeurde formulieren, klaar om naar de aannemer te gaan. */
+export async function listApproved(filter: { aannemerId?: string } = {}): Promise<StoredSubmission[]> {
+  const conds = [eq(schema.inmeetSubmissions.status, "am_approved")];
+  if (filter.aannemerId) {
+    conds.push(eq(schema.inmeetSubmissions.aannemerId, filter.aannemerId));
+  }
+  const rows = await db
+    .select()
+    .from(schema.inmeetSubmissions)
+    .where(and(...conds))
+    .orderBy(desc(schema.inmeetSubmissions.amCheckedAt));
+  return rows.map(rowToSubmission);
+}
+
+export async function getById(id: string): Promise<StoredSubmission | null> {
+  const rows = await db
+    .select()
+    .from(schema.inmeetSubmissions)
+    .where(eq(schema.inmeetSubmissions.id, id))
+    .limit(1);
+  return rows[0] ? rowToSubmission(rows[0]) : null;
+}
+
+export async function setAmDecision(
+  id: string,
+  decision: "am_approved" | "am_rejected",
+  options: { amCheckedBy?: string; amNotitie?: string; aannemerId?: string } = {},
+): Promise<StoredSubmission | null> {
+  const rows = await db
+    .update(schema.inmeetSubmissions)
+    .set({
+      status: decision,
+      amCheckedAt: new Date(),
+      amCheckedBy: options.amCheckedBy ?? null,
+      amNotitie: options.amNotitie ?? null,
+      aannemerId: options.aannemerId ?? null,
+    })
+    .where(eq(schema.inmeetSubmissions.id, id))
+    .returning();
+  return rows[0] ? rowToSubmission(rows[0]) : null;
 }

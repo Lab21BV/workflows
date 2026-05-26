@@ -113,8 +113,14 @@ export const VOORTRAJECTEN: Voortraject[] = [
       {
         nr: "7c",
         titel: "Ingevuld inmeetformulier doorsturen naar toegewezen aannemer",
+        details:
+          "AM controleert op /todo/accountmanager → goedkeuren + aannemer toewijzen. Aannemerportal leest goedgekeurde formulieren via GET /api/inmeetformulier?aannemerId=<id>.",
         lane: "klant",
-        status: "planned",
+        status: "implemented",
+        implementatie: {
+          location:
+            "app/todo/_InmeetControleLijst.tsx + app/api/inmeetformulier/route.ts",
+        },
       },
       {
         nr: "8a",

@@ -22,6 +22,13 @@
       "when": 1779794401757,
       "tag": "0002_whole_quasimodo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779808228401,
+      "tag": "0003_amazing_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

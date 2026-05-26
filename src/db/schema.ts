@@ -129,10 +129,21 @@ export const inmeetSubmissions = pgTable(
     payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
     /** Zoho Datums_2 record-id na succesvolle push, anders null. */
     zohoDatumsId: text("zoho_datums_id"),
+    /** AM-controle workflow: submitted → am_approved | am_rejected. */
+    status: text("status").notNull().default("submitted"),
+    /** Vrije notitie van de AM bij approve/reject. */
+    amNotitie: text("am_notitie"),
+    /** Wie heeft de AM-actie uitgevoerd (employees.id), null tot AM-check. */
+    amCheckedBy: uuid("am_checked_by").references(() => employees.id),
+    amCheckedAt: timestamp("am_checked_at", { withTimezone: true }),
+    /** Lab21 aannemer-id (employees.id) waarvoor het formulier bedoeld is. */
+    aannemerId: uuid("aannemer_id").references(() => employees.id),
     submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({
     orderIdx: index("inmeet_submissions_order_idx").on(t.zohoOrderId, t.submittedAt),
+    statusIdx: index("inmeet_submissions_status_idx").on(t.status, t.submittedAt),
+    aannemerIdx: index("inmeet_submissions_aannemer_idx").on(t.aannemerId, t.status),
   }),
 );
 
