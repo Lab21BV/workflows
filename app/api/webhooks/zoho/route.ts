@@ -11,6 +11,7 @@ export const maxDuration = 60;
 // expect. Extend this map per workflow.
 const HEADER_TO_PAYLOAD: Record<string, string> = {
   voorinspectieid: "voorinspectieId",
+  salesorderid: "salesOrderId",
 };
 
 export async function POST(req: NextRequest) {

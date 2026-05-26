@@ -213,6 +213,34 @@ export const PROCESSES: Record<string, ProcessDef> = {
     ],
   },
 
+  "sales-order-naar-ordercheck": {
+    id: "sales-order-naar-ordercheck",
+    title: "Sales_Order opmerkingen → salescontrole AM",
+    kind: "webhook",
+    summary:
+      "Wanneer een Sales_Order Description (opmerkingen) krijgt, schuift het systeem de order door naar fase 'Ordercheck' zodat de accountmanager hem in zijn salescontrole-lijst ziet.",
+    trigger:
+      "Zoho-werkflowsregel op `Sales_Orders` edit, voorwaarde 'Description is gewijzigd en niet leeg'. POST naar /api/webhooks/zoho met X-Workflow: sales-order-naar-ordercheck en header salesOrderId = ${Sales_Orders.id}.",
+    what:
+      "Leest de Sales_Order. Skip als Description leeg is. Skip als de order al op of voorbij 'Ordercheck' zit (geen fase-regressie). Anders: zet Status op 'Ordercheck'. De order verschijnt vervolgens in /todo/accountmanager onder 'Orders wachtend op salescontrole'.",
+    mermaid: `flowchart TD
+  Trigger([Sales_Order.Description<br/>gewijzigd]) --> Fetch[Lees Sales_Order]
+  Fetch --> HasDesc{Description<br/>niet leeg?}
+  HasDesc -- Nee --> Skip([Geen actie])
+  HasDesc -- Ja --> Phase{Fase < Ordercheck?}
+  Phase -- Nee --> Skip2([Geen actie<br/>fase al voorbij])
+  Phase -- Ja --> Update[/Status → Ordercheck/]
+  Update --> List([Order verschijnt in<br/>/todo/accountmanager])
+`,
+    fields: [
+      { module: "Sales_Orders", name: "Description", purpose: "Opmerkingen-veld dat de trigger vuurt" },
+      { module: "Sales_Orders", name: "Status", purpose: "Wordt op 'Ordercheck' (fase 7) gezet" },
+      { module: "Sales_Orders", name: "Owner", purpose: "Accountmanager-kolom in de output-lijst" },
+      { module: "Sales_Orders", name: "Account_Name", purpose: "Klant-kolom in de output-lijst" },
+      { module: "Sales_Orders", name: "SO_Number", purpose: "Order-identifier in de output-lijst" },
+    ],
+  },
+
   "showroom-review-followup": {
     id: "showroom-review-followup",
     title: "Showroom-bezoek → review opvolging",

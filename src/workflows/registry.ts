@@ -6,6 +6,7 @@ import { showroomReviewFollowup } from "./showroom-review-followup";
 import { klantenserviceNieuw } from "./klantenservice-nieuw";
 import { viReschedule } from "./vi-reschedule/run";
 import { viRescheduleStuck } from "./vi-reschedule-stuck";
+import { salesOrderNaarOrdercheck } from "./sales-order-naar-ordercheck";
 
 export const WORKFLOWS: Record<string, Workflow<unknown>> = {
   [voorinspectieAfgerond.id]: voorinspectieAfgerond as Workflow<unknown>,
@@ -15,6 +16,7 @@ export const WORKFLOWS: Record<string, Workflow<unknown>> = {
   [klantenserviceNieuw.id]: klantenserviceNieuw as Workflow<unknown>,
   [viReschedule.id]: viReschedule as Workflow<unknown>,
   [viRescheduleStuck.id]: viRescheduleStuck as Workflow<unknown>,
+  [salesOrderNaarOrdercheck.id]: salesOrderNaarOrdercheck as Workflow<unknown>,
 };
 
 export type WorkflowId = keyof typeof WORKFLOWS;

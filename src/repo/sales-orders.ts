@@ -43,3 +43,46 @@ export async function get(id: string): Promise<SalesOrderRow | null> {
 export async function updateLeverdatum(id: string, nieuweDatum: string): Promise<void> {
   await records().update("Sales_Orders", [{ id, Due_Date: nieuweDatum }]);
 }
+
+export type SalesControleRow = {
+  id: string;
+  Subject: string | null;
+  SO_Number: string | null;
+  Owner: { id: string; name: string } | null;
+  Account_Name: { id: string; name: string } | null;
+  Description: string | null;
+  Modified_Time: string | null;
+};
+
+type RawSalesControleRecord = {
+  id: string;
+  Subject?: string | null;
+  SO_Number?: string | null;
+  Owner?: { id: string; name: string } | null;
+  Account_Name?: { id: string; name: string } | null;
+  Description?: string | null;
+  Modified_Time?: string | null;
+};
+
+/**
+ * Orders die op salescontrole door de accountmanager wachten — globale lijst
+ * met AM-kolom. Triggered door `sales-order-naar-ordercheck` workflow die de
+ * fase op "Ordercheck" zet.
+ */
+export async function listAwaitingSalesControl(): Promise<SalesControleRow[]> {
+  const res = await records().search<RawSalesControleRecord>("Sales_Orders", {
+    criteria: "(Status:equals:Ordercheck)",
+    perPage: 200,
+  });
+  const rows = (res?.data ?? []).map<SalesControleRow>((r) => ({
+    id: r.id,
+    Subject: r.Subject ?? null,
+    SO_Number: r.SO_Number ?? null,
+    Owner: r.Owner ?? null,
+    Account_Name: r.Account_Name ?? null,
+    Description: r.Description ?? null,
+    Modified_Time: r.Modified_Time ?? null,
+  }));
+  rows.sort((a, b) => (b.Modified_Time ?? "").localeCompare(a.Modified_Time ?? ""));
+  return rows;
+}
