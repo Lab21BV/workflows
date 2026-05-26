@@ -7,6 +7,7 @@ import {
   TIJDLIJN_CODES,
   planningRegelsStats,
 } from "@/src/data/planning-tijdlijn";
+import { VOORTRAJECTEN, voortrajectStats } from "@/src/data/voortrajecten";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -312,6 +313,113 @@ export default async function WerkingPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Voortrajecten — multi-stap procesketens */}
+      <h2 style={{ marginTop: 48 }}>🧭 Voortrajecten</h2>
+      <p>
+        End-to-end procesketens die meerdere workflows + handmatige stappen +
+        reminders aan elkaar knopen. Bron: <code>src/data/voortrajecten.ts</code>.
+      </p>
+
+      {VOORTRAJECTEN.map((v) => {
+        const stats = voortrajectStats(v);
+        return (
+          <section key={v.id} style={{ marginTop: 24 }}>
+            <h3>
+              {v.titel}{" "}
+              <span style={{ color: "var(--color-muted)", fontWeight: 400, fontSize: 14 }}>
+                — {stats.implemented} / {stats.total} in code
+              </span>
+            </h3>
+            <p style={{ color: "var(--color-muted)", fontSize: 13 }}>{v.uitleg}</p>
+            <div className="card">
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--color-line)" }}>
+                    <th style={th}>Stap</th>
+                    <th style={th}>Baan</th>
+                    <th style={th}>Status</th>
+                    <th style={th}>Wat</th>
+                    <th style={th}>In code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {v.stappen.map((s) => {
+                    const live = s.status === "implemented";
+                    return (
+                      <tr
+                        key={s.nr}
+                        style={{
+                          borderBottom: "1px solid var(--color-line)",
+                          opacity: live ? 1 : 0.85,
+                        }}
+                      >
+                        <td style={{ ...td, fontFamily: "monospace", fontWeight: 500 }}>
+                          {s.nr}
+                        </td>
+                        <td style={td}>
+                          <span
+                            className="badge"
+                            style={{
+                              background:
+                                s.lane === "hoofd"
+                                  ? "var(--color-line)"
+                                  : s.lane === "klant"
+                                    ? "var(--color-clay)"
+                                    : "var(--color-tan)",
+                              color:
+                                s.lane === "hoofd"
+                                  ? "var(--color-muted)"
+                                  : "var(--color-bone)",
+                            }}
+                          >
+                            {s.lane}
+                          </span>
+                        </td>
+                        <td style={td}>
+                          <span
+                            className="badge"
+                            style={{
+                              background: live ? "var(--color-ink)" : "var(--color-line)",
+                              color: live ? "var(--color-bone)" : "var(--color-muted)",
+                            }}
+                          >
+                            {live ? "live" : "planned"}
+                          </span>
+                        </td>
+                        <td style={td}>
+                          <strong>{s.titel}</strong>
+                          {s.details && (
+                            <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 2 }}>
+                              {s.details}
+                            </div>
+                          )}
+                        </td>
+                        <td style={{ ...td, fontSize: 11, color: "var(--color-muted)" }}>
+                          {s.implementatie ? (
+                            <>
+                              {s.implementatie.workflowId && (
+                                <div>
+                                  <code>{s.implementatie.workflowId}</code>
+                                </div>
+                              )}
+                              {s.implementatie.location && (
+                                <code style={{ fontSize: 10 }}>{s.implementatie.location}</code>
+                              )}
+                            </>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        );
+      })}
 
       {/* Zoho-side rules */}
       <h2 style={{ marginTop: 48 }}>🔄 In Zoho CRM — werkflowsregels</h2>
