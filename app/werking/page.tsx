@@ -2,6 +2,11 @@ import { PROCESSES } from "@/src/processes";
 import { WORKFLOWS } from "@/src/workflows/registry";
 import { MODULES } from "@/src/zoho/modules";
 import { ZohoClient } from "@/src/zoho/client";
+import {
+  PLANNING_REGELS,
+  TIJDLIJN_CODES,
+  planningRegelsStats,
+} from "@/src/data/planning-tijdlijn";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -34,6 +39,7 @@ export default async function WerkingPage() {
   const liveCount = processes.filter((p) => liveIds.has(p.id)).length;
 
   const moduleCount = Object.keys(MODULES).length;
+  const planningStats = planningRegelsStats();
   const { rules: zohoRules, error: zohoError } = await fetchZohoRules();
   const zohoActive = zohoRules.filter((r) => r.status?.active !== false).length;
   const zohoInactive = zohoRules.length - zohoActive;
@@ -95,6 +101,17 @@ export default async function WerkingPage() {
           </div>
           <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 4 }}>
             Cron-schedules op deze app
+          </div>
+        </div>
+        <div className="card" style={{ borderLeft: "3px solid var(--color-clay)" }}>
+          <div style={{ fontSize: 28, fontWeight: 500, letterSpacing: "-0.02em" }}>
+            {planningStats.implemented}
+            <span style={{ color: "var(--color-muted)", fontSize: 14, fontWeight: 400 }}>
+              {" "}/ {planningStats.total}
+            </span>
+          </div>
+          <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 4 }}>
+            Planning-regels in code
           </div>
         </div>
       </div>
@@ -164,6 +181,136 @@ export default async function WerkingPage() {
             </p>
           </a>
         ))}
+      </div>
+
+      {/* Planning-tijdlijn — codes + regels */}
+      <h2 style={{ marginTop: 48 }}>📐 Planning-tijdlijn</h2>
+      <p>
+        Doelarchitectuur voor de uitvoeringsketen — codes (A01…V01) en de
+        volgorderegels ertussen. Bron:{" "}
+        <code>src/data/planning-tijdlijn.ts</code>.
+      </p>
+
+      <h3 style={{ marginTop: 24 }}>
+        Regels — {planningStats.implemented} / {planningStats.total} in code
+      </h3>
+      <p style={{ color: "var(--color-muted)", fontSize: 13 }}>
+        Welke planningsconstraints zijn al als logica ingebouwd, en welke nog
+        niet. Niet-geïmplementeerde regels worden nu nog handmatig of door de
+        configurator afgedwongen.
+      </p>
+      <div className="card">
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--color-line)" }}>
+              <th style={th}>Status</th>
+              <th style={th}>Expressie</th>
+              <th style={th}>Uitleg</th>
+              <th style={th}>In code</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PLANNING_REGELS.map((r, i) => {
+              const live = r.status === "implemented";
+              return (
+                <tr
+                  key={i}
+                  style={{
+                    borderBottom: "1px solid var(--color-line)",
+                    opacity: live ? 1 : 0.85,
+                  }}
+                >
+                  <td style={td}>
+                    <span
+                      className="badge"
+                      style={{
+                        background: live ? "var(--color-ink)" : "var(--color-line)",
+                        color: live ? "var(--color-bone)" : "var(--color-muted)",
+                      }}
+                    >
+                      {live ? "live" : "planned"}
+                    </span>
+                  </td>
+                  <td style={{ ...td, fontFamily: "monospace", fontSize: 12 }}>
+                    {r.expressie}
+                  </td>
+                  <td style={{ ...td, color: "var(--color-ink)" }}>{r.uitleg}</td>
+                  <td style={{ ...td, fontSize: 11, color: "var(--color-muted)" }}>
+                    {r.implementatie ? (
+                      <>
+                        {r.implementatie.workflowId && (
+                          <div>
+                            <code>{r.implementatie.workflowId}</code>
+                          </div>
+                        )}
+                        {r.implementatie.location && (
+                          <code style={{ fontSize: 10 }}>
+                            {r.implementatie.location}
+                          </code>
+                        )}
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style={{ marginTop: 32 }}>Codes — tijdlijn-omschrijvingen</h3>
+      <p style={{ color: "var(--color-muted)", fontSize: 13 }}>
+        De codeset (A01…V01) voor de tijdlijn. <strong>Nog niet als picklist
+        in Zoho aanwezig</strong> — Datums_2 gebruikt nu nog DE-/KL-/LA-codes
+        (zie <code>src/zoho/blueprints/tijdlijn.ts</code>). Migratie is een open
+        punt. &quot;Extra vragen&quot; = wordt bij de klant uitgevraagd via
+        de extra-vragen-flow.
+      </p>
+      <div className="card">
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--color-line)" }}>
+              <th style={th}>Code</th>
+              <th style={th}>Uitvoerder</th>
+              <th style={th}>Omschrijving</th>
+              <th style={th}>Wanneer uitgevraagd</th>
+            </tr>
+          </thead>
+          <tbody>
+            {TIJDLIJN_CODES.map((c) => (
+              <tr key={c.code} style={{ borderBottom: "1px solid var(--color-line)" }}>
+                <td style={{ ...td, fontFamily: "monospace", fontWeight: 500 }}>
+                  {c.code}
+                </td>
+                <td style={td}>
+                  <span
+                    className="badge"
+                    style={{
+                      background:
+                        c.uitvoerder === "Lab21"
+                          ? "var(--color-tan)"
+                          : c.uitvoerder === "Klant"
+                            ? "var(--color-clay)"
+                            : "var(--color-line)",
+                      color:
+                        c.uitvoerder === "Derden"
+                          ? "var(--color-muted)"
+                          : "var(--color-bone)",
+                    }}
+                  >
+                    {c.uitvoerder}
+                  </span>
+                </td>
+                <td style={td}>{c.omschrijving}</td>
+                <td style={{ ...td, color: "var(--color-muted)", fontSize: 12 }}>
+                  {c.extraVragen ? "Extra vragen" : "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Zoho-side rules */}
