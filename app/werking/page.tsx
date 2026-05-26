@@ -8,6 +8,11 @@ import {
   planningRegelsStats,
 } from "@/src/data/planning-tijdlijn";
 import { VOORTRAJECTEN, voortrajectStats } from "@/src/data/voortrajecten";
+import {
+  APP_LABELS,
+  CROSS_APP_FLOWS,
+  crossAppFlowStats,
+} from "@/src/data/cross-app-flows";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -41,6 +46,14 @@ export default async function WerkingPage() {
 
   const moduleCount = Object.keys(MODULES).length;
   const planningStats = planningRegelsStats();
+  const crossAppHopsTotal = CROSS_APP_FLOWS.reduce(
+    (s, f) => s + f.hops.length,
+    0,
+  );
+  const crossAppHopsLive = CROSS_APP_FLOWS.reduce(
+    (s, f) => s + f.hops.filter((h) => h.status === "implemented").length,
+    0,
+  );
   const { rules: zohoRules, error: zohoError } = await fetchZohoRules();
   const zohoActive = zohoRules.filter((r) => r.status?.active !== false).length;
   const zohoInactive = zohoRules.length - zohoActive;
@@ -113,6 +126,17 @@ export default async function WerkingPage() {
           </div>
           <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 4 }}>
             Planning-regels in code
+          </div>
+        </div>
+        <div className="card" style={{ borderLeft: "3px solid var(--color-tan)" }}>
+          <div style={{ fontSize: 28, fontWeight: 500, letterSpacing: "-0.02em" }}>
+            {crossAppHopsLive}
+            <span style={{ color: "var(--color-muted)", fontSize: 14, fontWeight: 400 }}>
+              {" "}/ {crossAppHopsTotal}
+            </span>
+          </div>
+          <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 4 }}>
+            Cross-app hops live
           </div>
         </div>
       </div>
@@ -421,6 +445,106 @@ export default async function WerkingPage() {
         );
       })}
 
+      {/* Cross-app dataflows */}
+      <h2 style={{ marginTop: 48 }}>🌐 Cross-app dataflows</h2>
+      <p>
+        Lijnen tussen de Lab21BV/* repos. Welke andere apps roepen
+        workflows aan en welke endpoints bedienen we? Bron:{" "}
+        <code>src/data/cross-app-flows.ts</code>.
+      </p>
+
+      {CROSS_APP_FLOWS.map((flow) => {
+        const stats = crossAppFlowStats(flow);
+        return (
+          <section key={flow.id} style={{ marginTop: 24 }}>
+            <h3>
+              {flow.titel}{" "}
+              <span style={{ color: "var(--color-muted)", fontWeight: 400, fontSize: 14 }}>
+                — {stats.implemented} / {stats.total} hops live
+              </span>
+            </h3>
+            <p style={{ color: "var(--color-muted)", fontSize: 13 }}>{flow.uitleg}</p>
+            <div className="card">
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--color-line)" }}>
+                    <th style={th}>#</th>
+                    <th style={th}>Van</th>
+                    <th style={th}>Naar</th>
+                    <th style={th}>Status</th>
+                    <th style={th}>Wat</th>
+                    <th style={th}>Endpoint / locatie</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {flow.hops.map((h, i) => {
+                    const live = h.status === "implemented";
+                    const internal = h.van === h.naar;
+                    return (
+                      <tr
+                        key={i}
+                        style={{
+                          borderBottom: "1px solid var(--color-line)",
+                          opacity: live ? 1 : 0.85,
+                        }}
+                      >
+                        <td style={{ ...td, fontFamily: "monospace", fontWeight: 500 }}>
+                          {i + 1}
+                        </td>
+                        <td style={td}>
+                          <span className="badge" style={appBadge(h.van)}>
+                            {APP_LABELS[h.van]}
+                          </span>
+                        </td>
+                        <td style={td}>
+                          {internal ? (
+                            <span style={{ color: "var(--color-muted)", fontSize: 12 }}>
+                              (intern)
+                            </span>
+                          ) : (
+                            <span className="badge" style={appBadge(h.naar)}>
+                              {APP_LABELS[h.naar]}
+                            </span>
+                          )}
+                        </td>
+                        <td style={td}>
+                          <span
+                            className="badge"
+                            style={{
+                              background: live ? "var(--color-ink)" : "var(--color-line)",
+                              color: live ? "var(--color-bone)" : "var(--color-muted)",
+                            }}
+                          >
+                            {live ? "live" : "planned"}
+                          </span>
+                        </td>
+                        <td style={td}>
+                          <strong>{h.titel}</strong>
+                          <div style={{ color: "var(--color-muted)", fontSize: 12, marginTop: 2 }}>
+                            {h.uitleg}
+                          </div>
+                        </td>
+                        <td style={{ ...td, fontSize: 11, color: "var(--color-muted)" }}>
+                          {h.endpoint && (
+                            <div>
+                              <code>{h.endpoint}</code>
+                            </div>
+                          )}
+                          {h.location && (
+                            <code style={{ fontSize: 10 }}>{h.location}</code>
+                          )}
+                          {!h.endpoint && !h.location && "—"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        );
+      })}
+
       {/* Zoho-side rules */}
       <h2 style={{ marginTop: 48 }}>🔄 In Zoho CRM — werkflowsregels</h2>
       <p>
@@ -535,3 +659,16 @@ const td: React.CSSProperties = {
   verticalAlign: "top",
   color: "var(--color-ink)",
 };
+
+const APP_COLORS: Record<string, { bg: string; fg: string }> = {
+  klantenportal: { bg: "var(--color-clay)", fg: "var(--color-bone)" },
+  workflows: { bg: "var(--color-ink)", fg: "var(--color-bone)" },
+  aannemerportal: { bg: "var(--color-tan)", fg: "var(--color-bone)" },
+  "zoho-crm": { bg: "var(--color-line)", fg: "var(--color-muted)" },
+  "zoho-creator": { bg: "var(--color-line)", fg: "var(--color-muted)" },
+};
+
+function appBadge(app: string): React.CSSProperties {
+  const c = APP_COLORS[app] ?? { bg: "var(--color-line)", fg: "var(--color-muted)" };
+  return { background: c.bg, color: c.fg };
+}
