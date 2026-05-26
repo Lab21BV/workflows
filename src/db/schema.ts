@@ -114,6 +114,28 @@ export const decisionLog = pgTable(
   }),
 );
 
+/**
+ * inmeet_submissions — door de klant ingediende inmeetformulieren
+ * (vloerverwarming). Eén rij per submit. Volledige payload als JSONB
+ * voor queryability + audit; samenvatting wordt apart naar Zoho Datums_2
+ * gepusht zodat het op de tijdlijn van de order verschijnt.
+ */
+export const inmeetSubmissions = pgTable(
+  "inmeet_submissions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    zohoOrderId: text("zoho_order_id").notNull(),
+    /** Volledige geverifieerde form-payload — zie src/data/inmeet-form-schema.ts. */
+    payload: jsonb("payload").$type<Record<string, unknown>>().notNull(),
+    /** Zoho Datums_2 record-id na succesvolle push, anders null. */
+    zohoDatumsId: text("zoho_datums_id"),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    orderIdx: index("inmeet_submissions_order_idx").on(t.zohoOrderId, t.submittedAt),
+  }),
+);
+
 export type Employee = typeof employees.$inferSelect;
 export type NewEmployee = typeof employees.$inferInsert;
 export type Delegation = typeof delegations.$inferSelect;
@@ -122,3 +144,5 @@ export type OrderAssignment = typeof orderAssignments.$inferSelect;
 export type NewOrderAssignment = typeof orderAssignments.$inferInsert;
 export type DecisionLogEntry = typeof decisionLog.$inferSelect;
 export type NewDecisionLogEntry = typeof decisionLog.$inferInsert;
+export type InmeetSubmission = typeof inmeetSubmissions.$inferSelect;
+export type NewInmeetSubmission = typeof inmeetSubmissions.$inferInsert;

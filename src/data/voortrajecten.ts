@@ -76,8 +76,13 @@ export const VOORTRAJECTEN: Voortraject[] = [
       {
         nr: "5",
         titel: "Klant ontvangt inmeetformulier vloerverwarming",
+        details:
+          "Interactief webformulier op /inmeetformulier?orderId=<id>. Versturing van de link via mail is nog planned.",
         lane: "hoofd",
-        status: "planned",
+        status: "implemented",
+        implementatie: {
+          location: "app/inmeetformulier/page.tsx",
+        },
       },
       {
         nr: "6",
@@ -90,9 +95,13 @@ export const VOORTRAJECTEN: Voortraject[] = [
       {
         nr: "7a",
         titel: "Klant vult inmeetformulier in",
-        details: "Binnen 2 dagen; anders elke 2 dagen reminder.",
+        details:
+          "Submit slaat data op in Postgres (inmeet_submissions) en pusht een samenvatting naar Zoho Datums_2 (Code=INMEET-VLOERVERWARMING), zichtbaar op /tijdlijn/[orderId]. Reminders elke 2 dagen zijn nog planned.",
         lane: "klant",
-        status: "planned",
+        status: "implemented",
+        implementatie: {
+          location: "app/inmeetformulier/actions.ts + src/repo/inmeet.ts",
+        },
       },
       {
         nr: "7b",

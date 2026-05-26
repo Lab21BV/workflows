@@ -15,6 +15,13 @@
       "when": 1779726697866,
       "tag": "0001_workable_johnny_blaze",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779794401757,
+      "tag": "0002_whole_quasimodo",
+      "breakpoints": true
     }
   ]
 }
